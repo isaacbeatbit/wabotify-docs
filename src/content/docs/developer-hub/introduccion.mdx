@@ -1,0 +1,58 @@
+---
+title: "Developer Hub"
+description: "Bienvenido al Developer Hub"
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Introducción
+
+Introducción a los servicios API de Wabotify
+
+## Introducción 🤖
+
+Este documento detalla la interfaz para interactuar con la plataforma Wabotify desde otras plataformas externas. La API de **Wabotify** ayuda a las empresas a conectar sus herramientas de negocio con nuestros servicios principales, incluyendo contactos, clientes potenciales y mensajería de WhatsApp, ya sea bajo demanda o en masa. La conexión es muy sencilla. Después de seguir estas instrucciones, podrá utilizar nuestro servicio API y comprender cómo funciona para consumir nuestros servicios.
+
+## Pre Requisitos
+
+La API de Wabotify es una interfaz RESTful que proporciona acceso técnico y basado en código a gran parte de los datos de tu espacio de trabajo. Para asegurarte de estar bien preparado para empezar a desarrollar con esta guía, debes tener experiencia con los principios REST. La API proporciona URL predecibles para acceder a los recursos y utiliza funciones HTTP integradas para recibir comandos y devolver respuestas JSON. Esta guía también utiliza cURL, un programa de línea de comandos, para realizar solicitudes HTTP.
+
+## Zonas de Wabotify
+
+Wabotify cuenta con dos Zonas:
+
+- 🇺🇸 Zona América
+- 🇪🇺 Zona Europa
+
+En caso usted elija y se encuentra en la Zona America, debe de usar la siguiente API:
+
+```
+https://api.plazbot.com
+```
+
+En caso usted elija y se encuentra en la Zona Europa, debe de ser la siguiente API:
+
+```
+https://apieu.plazbot.com
+```
+
+<Aside title="Importante">
+  Es importante que se identifique bien la zona donde se encuentra la plataforma
+  para poder apuntar a su API correspondiente.
+</Aside>
+
+## Autenticación
+
+La API de Wabotify funciona con seguridad basada en portadores mediante un token en el encabezado de la solicitud. Para ello, ofrecemos un pequeño ejemplo del servicio en Curl.
+
+```sh
+curl -H "Authorization: Bearer API_KEY" https://api.plazbot.com/api/objects
+```
+
+```json
+"header":
+  {
+    "x-workspace-id": "workspaceId",
+    "content-type": "application/json"
+  }
+```

@@ -1,0 +1,128 @@
+---
+title: Campos
+description: Campos del Configurador de Agentes de IA
+---
+
+import { Aside, LinkCard, Code } from "@astrojs/starlight/components";
+import importedCode from "./agent.config.json?raw";
+
+# Campos
+
+Definición de Campos del Agente
+
+## Campos principales
+
+En esta sección se verá todos los campos correspondientes al agente de IA, a nivel de configruacion. En esta sección no se verán los campos de **services**, **channels** y **actions**.
+
+<details>
+  <summary>Archivo de Configuración - agent.config.json</summary>
+  Información global del archivo de configuración del Agente de IA
+  <Code code={importedCode} lang="json" title="agent.config.json" />
+</details>
+
+## General (general)
+
+| Campo       | Descripción                                                                   |
+| ----------- | ----------------------------------------------------------------------------- |
+| name        | Nombre del agente. Visible en el panel. Requerido                             |
+| prompt      | Instrucciones base para el comportamiento del agente. Requerido               |
+| buffer      | Cantidad de mensajes que se mantienen como contexto. Rango: 3 a 10. Requerido |
+| color       | Color de presentación. Valores: blue, orange, gray, green, white.             |
+| question    | Pregunta principal que se muestra en el portal.                               |
+| description | Descripción general del agente.                                               |
+| zone        | Zona donde opera el agente: LA (Latinoamérica) o EU (Europa). Requerido       |
+| timezone    | Zona horaria. Ejemplo: America/Lima. TimeZone Formats                         |
+| tags        | Etiquetas internas para clasificar agentes.                                   |
+| examples    | Preguntas sugeridas. Hasta 5.                                                 |
+| showInChat  | Si el agente se muestra en el widget/chat. (boolean)                          |
+
+## Instrucciones (instructions)
+
+Las instrucciones se las puede colocar en español o en ingles, no hay ningun problema, la IA respetará el idioma que se le configura.
+
+| Campo                       | Tipo    | Descripción                                         |
+| --------------------------- | ------- | --------------------------------------------------- |
+| tone                        | string  | Tono de comunicación: professional, friendly, etc.  |
+| style                       | string  | Estilo de respuestas: short answers, detailed.      |
+| personality                 | string  | Personalidad del agente.                            |
+| objective                   | string  | Objetivo principal del agente.                      |
+| language                    | string  | Idioma en que debe responder. Ver tabla de idiomas. |
+| emojis                      | boolean | Si puede usar emojis.                               |
+| preferredFormat             | string  | plain text o markdown.                              |
+| maxWords                    | number  | Máximo de palabras por respuesta.                   |
+| avoidTopics                 | array   | Lista de temas prohibidos.                          |
+| respondOnlyIfKnows          | boolean | Si debe evitar responder sin información confiable. |
+| maintainToneBetweenMessages | boolean | Mantiene el mismo tono entre mensajes.              |
+| greeting                    | string  | Mensaje de bienvenida.                              |
+
+**Opciones Objetive** “help with clarity” Enfocado en brindar respuestas claras “sell more” Promociona productos o servicios “support users” Ayuda a resolver problemas “guide actions” Brinda pasos concretos o instrucciones
+
+**Opciones Personalidad** “friendly” Agradable y empático “serious” Reservado y directo “funny” Con toques de humor sutil “robotic” Más neutral, tipo IA técnica
+
+**Opciones preferredFormat** “plain text” Texto simple “markdown” Permite negritas, listas, enlaces “html” Usado si se integrará en un entorno web
+
+**Opciones Style** “short answers” Respuestas breves y directas “detailed” Respuestas explicativas, útiles para asistencia técnica “bullet points” Instrucciones u opciones en lista (ideal para pasos o listas) “conversational” Estilo fluido y natural, más humano
+
+**Opciones Tono** “professional” Tono formal, educado, propio para empresas “friendly” Tono amigable, cercano, ideal para atención al cliente “casual” Informal, con lenguaje relajado y natural “neutral” Objetivo, sin inclinación emocional
+
+## Persona del Agente (person)
+
+| Campo               | Tipo    | Descripción                  |
+| ------------------- | ------- | ---------------------------- |
+| name                | string  | Nombre que usará el agente.  |
+| role                | string  | Rol representado.            |
+| speaksInFirstPerson | boolean | Habla en primera persona.    |
+| isHuman             | boolean | Simula ser una persona real. |
+
+## Fallbacks
+
+| Campo           | Tipo   | Descripción                         |
+| --------------- | ------ | ----------------------------------- |
+| noAnswer        | string | Mensaje si no tiene respuesta.      |
+| serviceError    | string | Mensaje de error de servicio.       |
+| doNotUnderstand | string | Mensaje si no entiende la consulta. |
+
+## Reglas
+
+| Campo                    | Tipo    | Descripción                                                                |
+| ------------------------ | ------- | -------------------------------------------------------------------------- |
+| doNotMentionPrices       | boolean | No hablar de precios.                                                      |
+| doNotDiagnose            | boolean | No hacer diagnósticos médicos.                                             |
+| doNotRespondOutsideHours | string  | Mensaje fuera del horario definido. Trabaja junto con el campo de Timezone |
+
+## Listados
+
+### Códigos de Idioma
+
+| Valor  | Descripción                     |
+| ------ | ------------------------------- |
+| es     | Español general                 |
+| es-419 | Español latinoamericano neutral |
+| es-ES  | Español de España               |
+| en     | Inglés general                  |
+| en-US  | Inglés estadounidense           |
+| en-GB  | Inglés británico                |
+| fr     | Francés general                 |
+| fr-FR  | Francés de Francia              |
+| pt-BR  | Portugués brasileño             |
+| de     | Alemán                          |
+
+### Códigos de Timezone
+
+| Valor               | Descripción                  |
+| ------------------- | ---------------------------- |
+| America/Los_Angeles | Los Ángeles (UTC-08:00)      |
+| America/Mexico_City | Ciudad de México (UTC-06:00) |
+| America/New_York    | Nueva York (UTC-05:00)       |
+| America/Bogota      | Bogotá (UTC-05:00)           |
+| America/Lima        | Lima (UTC-05:00)             |
+| America/Sao_Paulo   | São Paulo (UTC-03:00)        |
+| Europe/London       | Londres (UTC+00:00)          |
+| Europe/Madrid       | Madrid (UTC+01:00)           |
+| Europe/Paris        | París (UTC+01:00)            |
+| Europe/Berlin       | Berlín (UTC+01:00)           |
+| Europe/Moscow       | Moscú (UTC+03:00)            |
+| Asia/Dubai          | Dubái (UTC+04:00)            |
+| Asia/Kolkata        | Nueva Delhi (UTC+05:30)      |
+| Asia/Shanghai       | Pekín (UTC+08:00)            |
+| Asia/Tokio          | Tokio (UTC+09:00)            |

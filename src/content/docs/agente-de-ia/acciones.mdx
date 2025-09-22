@@ -1,0 +1,221 @@
+---
+title: Acciones
+description: Agregar acciones al Agente de IA
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Acciones
+
+Agregar acciones al Agente de IA
+
+Este documento describe cómo se puede agregar acciones al Agente de IA, como por ejemplo:
+
+- Apagar un agente de IA.
+- Asignar una fase al contacto.
+- Asignar una etiqueta al contacto.
+- Asignar una segmentación al contacto.
+- Asignar un agente humano al contacto.
+
+![Crear Nuevo Agente](../../../assets/agente-ia/actions.avif)
+
+## Campos de la Acción
+
+| Campo           | Descripción                                                                                                                                                                                         |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| reference       | Descripción detallada del contenido de la intención. Se utiliza para poder darle información al agente y sepa la intención del usuario, como por ejemplo: **“Quiero hablar con un agente humano”**. |
+| tags            | Son referencias para poder entender más la información dentro de la acción, si bien es cierto, con la Referencia existe más posibilidades, con los tags se complementa esta funcionalidad.          |
+| enabled         | Booleano que indica si la acción está activada (`true`) o no (`false`).                                                                                                                             |
+| responseMessage | Mensaje que el agente debe de responder al usuario.                                                                                                                                                 |
+| responseIA      | Booleano que indica si después de ejecutar las acciones, el agente debe continuar con el flujo de IA (`true`) o usar solo el responseMessage (`false`).                                             |
+| responseJson    | Booleano que indica si el agente debe de responder con un JSON estructurado (`true`) o un mensaje de texto plano (`false`).                                                                         |
+| action          | Listado de acciones que se pueden ejecutar el Agente de IA.                                                                                                                                         |
+
+---
+
+<Aside title="Nota">
+  El agente de IA ejecutará las acciones en orden, esto quiere decir que si puso
+  dos asignaciones, el agente de IA asignará la primera y luego la segunda.
+</Aside>
+
+## Tipos de Respuesta
+
+Las acciones del agente tienen dos configuraciones importantes que determinan cómo responde después de ejecutar las acciones:
+
+### ResponseIA
+
+Controla si el agente debe continuar con el flujo de IA después de ejecutar las acciones.
+
+| Valor   | Comportamiento                                                  |
+| ------- | --------------------------------------------------------------- |
+| `true`  | Ejecuta las acciones + responde con IA (más inteligente)        |
+| `false` | Ejecuta las acciones + responde solo con responseMessage (fijo) |
+
+**Ejemplo con responseIA = true:**
+
+```
+👤 Usuario: "Quiero información sobre precios"
+🤖 Bot: [Ejecuta acciones: AsignarTag "comercial"]
+🤖 Bot: "¡Hola! Me complace ayudarte con información sobre nuestros precios. Tenemos varios planes disponibles..."
+```
+
+**Ejemplo con responseIA = false:**
+
+```
+👤 Usuario: "Quiero información sobre precios"
+🤖 Bot: [Ejecuta acciones: AsignarTag "comercial"]
+🤖 Bot: "Gracias por tu consulta, un ejecutivo te contactará pronto."
+```
+
+---
+
+### ResponseJSON
+
+Controla el formato de la respuesta de la acción (solo cuando `responseIA = false`).
+
+| Valor   | Formato de Respuesta |
+| ------- | -------------------- |
+| `false` | Texto plano          |
+| `true`  | JSON estructurado    |
+
+**Ejemplo con responseJSON = false:**
+
+```json
+{
+  "success": true,
+  "answer": "Gracias por tu consulta, un ejecutivo te contactará pronto."
+}
+```
+
+**Ejemplo con responseJSON = true:**
+
+```json
+{
+  "success": true,
+  "answer": {
+    "message": "Gracias por tu consulta, un ejecutivo te contactará pronto.",
+    "actionsExecuted": [
+      {
+        "type": "action.tag",
+        "value": "comercial"
+      },
+      {
+        "type": "action.stage",
+        "value": "prospecto"
+      }
+    ]
+  }
+}
+```
+
+<Aside title="Importante">
+  El campo `responseJSON` solo afecta cuando `responseIA = false`. Si
+  `responseIA = true`, la respuesta siempre será texto plano generado por la IA.
+</Aside>
+
+---
+
+## Casos de Uso Comunes
+
+### 1. Acción con Respuesta Inteligente
+
+```json
+{
+  "intent": "solicitar_informacion",
+  "reference": "El usuario solicita información sobre productos o servicios",
+  "tags": ["informacion", "productos"],
+  "enabled": true,
+  "responseMessage": "",
+  "responseIA": true,
+  "responseJson": false,
+  "action": [
+    {
+      "type": "AsignarTag",
+      "value": "lead_caliente"
+    }
+  ]
+}
+```
+
+**Resultado:** Ejecuta la acción + la IA responde inteligentemente según el contexto.
+
+---
+
+### 2. Acción con Respuesta Fija
+
+```json
+{
+  "intent": "contactar_soporte",
+  "reference": "El usuario quiere contactar con soporte técnico",
+  "tags": ["soporte", "ayuda"],
+  "enabled": true,
+  "responseMessage": "He registrado tu solicitud de soporte. Un técnico se comunicará contigo en breve.",
+  "responseIA": false,
+  "responseJson": false,
+  "action": [
+    {
+      "type": "AsignarTag",
+      "value": "soporte"
+    },
+    {
+      "type": "AsignarFase",
+      "value": "ticket_abierto"
+    }
+  ]
+}
+```
+
+**Resultado:** Ejecuta las acciones + respuesta fija predefinida.
+
+---
+
+### 3. Acción para API/Webhook (JSON)
+
+```json
+{
+  "intent": "registrar_lead",
+  "reference": "Registro automático de lead en sistema externo",
+  "tags": ["lead", "crm"],
+  "enabled": true,
+  "responseMessage": "Registro completado exitosamente",
+  "responseIA": false,
+  "responseJson": true,
+  "action": [
+    {
+      "type": "AsignarTag",
+      "value": "lead_registrado"
+    }
+  ]
+}
+```
+
+**Resultado:** Ejecuta las acciones + respuesta JSON estructurada (ideal para integraciones).
+
+---
+
+## Acciones Disponibles
+
+### Asignación de Agentes
+
+El agente de IA puede asignar un agente humano al contacto, esto se podrá visualizar en la vista de contactos, en el campo de **Agente Asignado**.
+
+### Asignación de Etiquetas
+
+El agente de IA puede asignar una etiqueta al contacto, esto se podrá visualizar en la vista de contactos, en el campo de **Etiquetas**.
+
+### Asignación de Fases
+
+El agente de IA puede asignar una fase al contacto, esto se podrá visualizar en la vista de contactos, en el campo de **Fase**.
+
+### Asignación de Segmentación
+
+El agente de IA puede asignar una segmentación al contacto, esto se podrá visualizar en la vista de contactos, en el campo de **Segmentación**.
+
+### Apagar el Agente de IA
+
+El Agente de IA puede apagarse con la acción de Shutdown, esto se podrá visualizar en la vista de contactos, en el campo de **Agente Activo**.
+
+<Aside title="Importante" type="caution">
+  Si el agente se apaga, ya no contestará hasta que se vuelva a encender de
+  forma manual.
+</Aside>

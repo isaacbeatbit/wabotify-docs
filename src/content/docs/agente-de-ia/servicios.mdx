@@ -1,0 +1,331 @@
+---
+title: Servicios
+description: Definición de como funcionan los servicios del Agente de IA
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Servicios
+
+Definición de como funcionan los servicios del Agente de IA
+
+## Introducción
+
+Este documento menciona como se puede conectar el agente a Servicios externos del cliente, por ejemplo consultar servicios a base de datos, productos, reservar citas, etc.
+
+<Aside title="Recomemendacion">
+  Se pueden agregar tantos servicios como se desee conectar, es importante poder
+  diferenciar las referencias de los servicios para que el Agente pueda entender
+  la intención. Mientras mas diferenciada esta la referencia, mejor sera el
+  Agente para entender la intención.
+</Aside>
+
+![Crear Nuevo Agente](../../../assets/agente-ia/services-1.avif)
+
+## Campos del Servicio
+
+| Campo                | Descripción                                                                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `intent`             | Identificador único de la intención del servicio. Se usa para detectar qué está solicitando el usuario (por ejemplo, "schedule_appointment"). |
+| `reference`          | Frase corta y descriptiva que ayuda a la IA a entender cuándo debe activarse este servicio. Ejemplo: "Servicio para reservar citas médicas".  |
+| `enabled`            | Booleano que indica si el servicio está activo (`true`) o no (`false`).                                                                       |
+| `method`             | Método HTTP usado para llamar a la API externa (GET, POST.), no se puede otra solicitud por el momento.                                       |
+| `endpoint`           | URL completa de la API que se desea invocar cuando se activa la intención.                                                                    |
+| `headers`            | Objeto con pares clave-valor para incluir headers HTTP personalizados como Authorization.                                                     |
+| `requiredFields`     | Arreglo de strings que indica qué datos del usuario son requeridos antes de ejecutar el servicio (por ejemplo, `["nombre", "email"]`).        |
+| `bodyTemplate`       | Objeto que se usa para construir el cuerpo del request. Soporta interpolación de variables como `{{email}}`, `{{nombre}}`.                    |
+| `responseMapping`    | Define cómo extraer datos desde la respuesta de la API (por ejemplo, `"mensaje": "$.response.message"`).                                      |
+| `responseMessage`    | Mensaje que el agente debe devolver al usuario tras ejecutar correctamente el servicio. Se pueden usar placeholders como `{{fecha}}`.         |
+| `responseConditions` | Arreglo de objetos que define condiciones para el mensaje de respuesta. Cada objeto debe tener `condition` y `message`.                       |
+
+## Formatos de Campos
+
+Los campos que se usan en el bodyTemplate pueden usar formatos especiales para diferentes tipos de datos:
+
+**Para fechas:**
+
+- **`{{fecha|format('yyyy-MM-dd')}}`** → "2024-01-15"
+- **`{{fecha|format('dd/MM/yyyy')}}`** → "15/01/2024"
+- **`{{fecha|format('yyyy-MM-dd HH:mm:ss')}}`** → "2024-01-15 14:30:00"
+
+**Para números:**
+
+- **`{{precio|number}}`** → 1500 (número entero)
+- **`{{precio|format('0.00')}}`** → "1500.00" (dos decimales)
+- **`{{cantidad|number}}`** → 5
+
+**Para texto:**
+
+- **`{{nombre}}`** → "Juan Pérez"
+- **`{{email}}`** → "juan@email.com"
+
+**Variables dinámicas del usuario:**
+
+Las variables **`{{variable}}`** se reemplazan con los datos que el usuario proporciona durante la conversación
+
+Solo funcionan las variables que están definidas en **`{{requiredFields}}`** o que el usuario haya proporcionado
+
+**👉 Formatos de Campos Completos**
+
+<Aside title="Importante">
+  Las variables solo se reemplazan con datos que el usuario proporciona durante
+  la conversación. Deben estar definidas en requiredFields para que el agente
+  las solicite automáticamente.
+</Aside>
+
+<Aside title="Limitaciones" type="caution">
+  El sistema no incluye variables automáticas como fecha actual o IDs del
+  sistema. Solo se interpolan las variables recopiladas del usuario.
+</Aside>
+
+## Ejemplo de responseMapping
+
+El **`responseMapping`** te permite extraer datos específicos de la respuesta de tu API externa usando **JSONPath**. Estos valores extraídos luego se pueden usar en el **`responseMessage`** y **`responseConditions`**.
+
+### responseMapping básico:
+
+```json
+{
+  "responseMapping": {
+    "mensaje": "$.response.mensaje",
+    "status": "$.response.status",
+    "fecha": "$.response.fecha",
+    "id": "$.response.id"
+  }
+}
+```
+
+### Ejemplo con API de citas médicas:
+
+Si tu API responde:
+
+```json
+{
+  "success": true,
+  "data": {
+    "appointment": {
+      "id": "apt_12345",
+      "date": "2024-01-15",
+      "time": "14:30",
+      "doctor": "Dr. García",
+      "status": "confirmed"
+    },
+    "patient": {
+      "name": "Juan Pérez",
+      "email": "juan@email.com"
+    }
+  },
+  "message": "Cita agendada exitosamente"
+}
+```
+
+Tu responseMapping sería:
+
+```json
+{
+  "responseMapping": {
+    "cita_id": "$.data.appointment.id",
+    "fecha": "$.data.appointment.date",
+    "hora": "$.data.appointment.time",
+    "doctor": "$.data.appointment.doctor",
+    "estado": "$.data.appointment.status",
+    "nombre_paciente": "$.data.patient.name",
+    "email": "$.data.patient.email",
+    "mensaje_api": "$.message"
+  }
+}
+```
+
+### Ejemplo con API de e-commerce:
+
+Si tu API responde:
+
+```json
+{
+  "order": {
+    "id": "ORD-789",
+    "total": 299.99,
+    "currency": "USD",
+    "items": [
+      {
+        "name": "Producto A",
+        "quantity": 2,
+        "price": 149.99
+      }
+    ]
+  },
+  "shipping": {
+    "tracking_number": "TRK123456",
+    "estimated_delivery": "2024-01-20"
+  },
+  "status": "processing"
+}
+```
+
+Tu responseMapping sería:
+
+```json
+{
+  "responseMapping": {
+    "numero_orden": "$.order.id",
+    "total": "$.order.total",
+    "moneda": "$.order.currency",
+    "producto": "$.order.items[0].name",
+    "cantidad": "$.order.items[0].quantity",
+    "numero_seguimiento": "$.shipping.tracking_number",
+    "fecha_entrega": "$.shipping.estimated_delivery",
+    "estado_orden": "$.status"
+  }
+}
+```
+
+### Ejemplo con arrays y datos anidados:
+
+```json
+{
+  "responseMapping": {
+    "primer_producto": "$.products[0].name",
+    "precio_total": "$.summary.total_amount",
+    "descuento": "$.summary.discount.percentage",
+    "usuario_vip": "$.customer.membership.is_vip",
+    "puntos_ganados": "$.customer.loyalty.points_earned"
+  }
+}
+```
+
+## Sintaxis JSONPath
+
+### Acceso básico:
+
+- **`$.campo`** → Accede a un campo en la raíz
+- **`$.objeto.subcampo`** → Accede a campos anidados
+- **`$.array[0]`** → Primer elemento de un array
+- **`$.array[*]`** → Todos los elementos de un array
+
+### Ejemplos de rutas:
+
+- **`$.response.message`** → response.message
+- **`$.data.user.email`** → data.user.email
+- **`$.items[0].price`** → Precio del primer item
+- **`$.orders[-1].id`** → ID de la última orden
+
+<Aside title="Nota">
+  Los valores extraídos con `responseMapping` se convierten automáticamente en
+  variables que puedes usar en `responseMessage` como `{{ variable }}`. Por
+  ejemplo, si extraes `"fecha": "$.data.date"`, puedes usar `{{ fecha }}` en tu
+  mensaje de respuesta.
+</Aside>
+
+<Aside type="caution" title="Atención">
+  Si la ruta JSONPath no existe en la respuesta de la API, esa variable
+  simplemente no se creará. Asegúrate de que las rutas coincidan con la
+  estructura real de tu API.
+</Aside>
+
+## Campos requeridos
+
+Los **campos requeridos** son la base fundamental de los servicios. Definen qué información debe recopilar el agente del usuario antes de ejecutar el servicio. **Estos campos son las variables que alimentarán el** **`bodyTemplate`**.
+
+![Crear Nuevo Agente](../../../assets/agente-ia/services-2.avif)
+
+## Configuración de campos requeridos
+
+Cada campo requerido se define con las siguientes propiedades:
+
+| Propiedad   | Descripción                                                 | Ejemplo                                           |
+| ----------- | ----------------------------------------------------------- | ------------------------------------------------- |
+| name        | Nombre del campo que se usará en `{{variable}}`             | "nombre", "email", "fecha"                        |
+| type        | Tipo de dato esperado                                       | "string", "number", "date", "datetime", "boolean" |
+| description | Explicación del campo para que la IA entienda qué solicitar | "Nombre completo del cliente"                     |
+| promptHint  | Sugerencia de cómo la IA debe preguntar este campo          | "¿Cuál es tu nombre completo?"                    |
+
+## Tipos de datos soportados
+
+| Tipo     | Descripción     | Validación                                   |
+| -------- | --------------- | -------------------------------------------- |
+| string   | Texto libre     | Valida que no esté vacío                     |
+| number   | Número decimal  | Acepta cualquier entrada (validación básica) |
+| integer  | Número entero   | Acepta cualquier entrada (validación básica) |
+| date     | Fecha           | Valida y normaliza fechas con IA ✅          |
+| datetime | Fecha y hora    | Valida fechas con hora ✅                    |
+| boolean  | Verdadero/Falso | Acepta cualquier entrada (validación básica) |
+
+## Playground
+
+Aquí puedes experimentar con la configuración de servicios y campos requeridos, para eso existe una pantalla en cada uno de los servicios creados para probar el servicio y poder saber el retorno que se tendra.
+
+![Crear Nuevo Agente](../../../assets/agente-ia/services-3.avif)
+
+## Flujo de recopilación
+
+1. El usuario expresa una intención que coincide con el servicio
+2. El agente identifica campos faltantes comparando con requiredFields
+3. Pregunta los campos uno por uno usando promptHint como guía
+4. Valida cada respuesta según el type especificado
+5. Una vez completos todos los campos, ejecuta el servicio con bodyTemplate
+
+<Aside title="Importante">
+  Los nombres de los campos en `requiredFields` deben coincidir exactamente con
+  las variables usadas en `bodyTemplate`. Por ejemplo, si defines `"name":
+  "email"`, debes usar `{{ email }}` en el bodyTemplate.
+</Aside>
+
+<Aside title="Nota" type="caution">
+  Validación parcial: El sistema actualmente valida automáticamente fechas
+  (`date`/`datetime`) y campos vacíos (`string`). Si el usuario proporciona una
+  fecha inválida, el agente pedirá el dato nuevamente con un mensaje de error.
+  Para otros tipos como `number` o `boolean`, la validación es más básica.
+</Aside>
+
+## Campos Condicionales
+
+Con la plataforma se puede tener condicionales para que el Agente pueda responder de forma diferente en base a la respuesta del servicio.
+
+![Crear Nuevo Agente](../../../assets/agente-ia/services-4.avif)
+
+### Ejemplo de responseConditions
+
+```json
+"responseConditions": [
+  {
+    "condition": "$.response.status == 'success'",
+    "message": "¡Perfecto! Tu cita ha sido confirmada para el {{date}}. Te enviaremos un recordatorio por email a {{email}}."
+  },
+  {
+    "condition": "$.response.status == 'conflict'",
+    "message": "Lo siento, ese horario no está disponible. {{conflictReason}}. ¿Te gustaría que te sugiera otros horarios disponibles?"
+  },
+  {
+    "condition": "$.response.status == 'error' && $.response.errorCode == 'invalid_email'",
+    "message": "Parece que el email proporcionado no es válido. ¿Podrías verificar tu dirección de correo electrónico?"
+  },
+  {
+    "condition": "$.response.status == 'error' && $.response.errorCode == 'past_date'",
+    "message": "No puedo agendar citas en fechas pasadas. ¿Podrías elegir una fecha futura?"
+  },
+  {
+    "condition": "$.response.status == 'pending'",
+    "message": "Tu solicitud de cita está en proceso de revisión. Te contactaremos dentro de las próximas 24 horas para confirmar la disponibilidad."
+  }
+]
+```
+
+### Operadores Condicionales
+
+- == (Igual a)
+- != (Distinto a)
+- `<`(Menor que)
+- `>`(Mayor que)
+- `<=` (Menor o igual a)
+- `>=` (Mayor o igual a)
+
+<Aside title="Nota">
+  El `responseMessage` por defecto se usa solo si ninguna de las condiciones en
+  `responseConditions` se cumple, funcionando como un fallback.
+</Aside>
+
+### Consideraciones
+
+- El Agente de IA consultará al usuario, los campos que se encuentran en el campo `requiredFields` en el formato: campo: campo, el usuario puede llenar un campo o todos, la IA entenderá si faltan o no campos antes del consumir el servicio.
+- El `responseMapping` te ayudará a poder completar los datos del campo `requiredMessage`, colocando la información en las llaves correspondientes, el json que te trae el servicio deberia de poder colocar los campos dentro del Mensaje.
+- Se pueden crear uno o varios servicios dentro de la configuración del Agente, para que pueda consultar sus servicios.

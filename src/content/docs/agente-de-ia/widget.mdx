@@ -1,0 +1,78 @@
+---
+title: Widget
+description: Definición de cómo funciona el widget del Agente de IA
+---
+
+# Widget
+
+Definición de cómo funciona el widget del Agente de IA
+
+## Introducción
+
+Este documento menciona cómo se puede configurar el widget del Agente de IA, incluyendo:
+
+- Habilitar el widget.
+- Cambiar el tema del widget.
+- Cambiar el nombre del widget.
+- Mostrar el widget inicialmente abierto.
+
+---
+
+## Habilitar el widget
+
+Para habilitar el widget tienes que ir al tab de Widget y activar el switch.
+
+## ![Crear Nuevo Agente](../../../assets/agente-ia/widget.avif)
+
+---
+
+## Cambiar el tema del widget
+
+Para cambiar el tema del widget, ve al tab de **Widget** y activa el switch de **Dark Mode**.
+
+## ![Crear Nuevo Agente](../../../assets/agente-ia/widget-2.avif)
+
+---
+
+## Cambiar el nombre del widget
+
+Para cambiar el nombre del widget, ve al tab de **Widget** y modifica el campo de nombre.
+
+---
+
+## URL del widget
+
+Para cambiar la URL del widget, ve al tab de **Widget** y edita el campo de URL.
+
+Ejemplo de integración:
+
+```html
+<script
+  id="wabotify-widget-script"
+  type="module"
+  defer
+  src="./dist/widget.js?Id={{idAgent}}&zone={{zone}}&workspaceId={{workspaceId}}"
+></script>
+```
+
+---
+
+## Cambios en `agent.config.json`
+
+Todas las modificaciones que realices en la configuración del widget se reflejan en el archivo `agent.config.json`:
+
+- **enableWidget**: Booleano que indica si el widget está activo o no.
+- **darkWidget**: Booleano que indica si el widget está en modo oscuro o no.
+- **nameWidget**: String que indica el nombre del widget.
+- **initialShowWidget**: Booleano que indica si el widget aparece inicialmente abierto o no.
+
+Ejemplo de configuración:
+
+```json
+{
+  "enableWidget": true,
+  "darkWidget": true,
+  "nameWidget": "Wabotify",
+  "initialShowWidget": true
+}
+```

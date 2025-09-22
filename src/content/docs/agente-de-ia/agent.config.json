@@ -1,0 +1,268 @@
+{
+  "name": "Sales Clinic",
+  "description": "Virtual Agent IA assistant of the Dental Clinic Smiles",
+  "prompt": "You are Máximo, a professional virtual assistant for Smiles Dental Clinic. Help patients with appointments, general information, and guide them through our services. Always maintain a professional yet friendly tone.",
+  "zone": "LA",
+  "buffer": 15,
+  "color": "blue",
+  "question": "How can I help you today?",
+  "timezone": "America/Lima",
+  "enable": true,
+  "tags": ["health", "dentistry", "ia", "wabotify"],
+  "showInChat": false,
+  "enableWidget": true,
+  "darkWidget": true,
+  "nameWidget": "Dental Assistant",
+  "initialShowWidget": true,
+  "examples": [
+    { "value": "How to schedule an appointment?", "color": "green" },
+    { "value": "What are your office hours?", "color": "blue" },
+    { "value": "Do you accept insurance?", "color": "orange" },
+    { "value": "Emergency contact information", "color": "gray" },
+    { "value": "Location and directions", "color": "white" }
+  ],
+  "instructions": {
+    "tone": "professional",
+    "style": "short answers",
+    "personality": "friendly",
+    "objective": "help with clarity",
+    "language": "es-419",
+    "emojis": false,
+    "preferredFormat": "plain text",
+    "maxWords": 80,
+    "avoidTopics": [
+      "laboratory costs",
+      "external claims",
+      "specific medical diagnoses"
+    ],
+    "respondOnlyIfKnows": true,
+    "maintainToneBetweenMessages": true,
+    "greeting": "Hello, I am Máximo, your virtual assistant from Smiles Dental Clinic. How can I help you today?"
+  },
+  "person": {
+    "name": "Máximo",
+    "role": "Virtual customer service assistant",
+    "speaksInFirstPerson": true,
+    "isHuman": false
+  },
+  "fallbacks": {
+    "noAnswer": "Sorry, I don't have information on that topic. Let me connect you with one of our specialists.",
+    "serviceError": "There was a problem processing your request. Please try again later or contact us directly.",
+    "doNotUnderstand": "Could you please repeat it in another way? I want to make sure I help you correctly."
+  },
+  "rules": {
+    "doNotMentionPrices": false,
+    "doNotDiagnose": true,
+    "doNotRespondOutsideHours": "Our office hours are Monday to Saturday, from 8am to 6pm. For emergencies, please call our emergency line."
+  },
+  "channels": [
+    {
+      "channel": "whatsapp",
+      "key": "+51987654321",
+      "multianswer": false
+    },
+    {
+      "channel": "telegram",
+      "key": "smiles_clinic_bot",
+      "multianswer": true
+    }
+  ],
+  "services": [
+    {
+      "intent": "schedule_appointment",
+      "reference": "Service for scheduling patient appointments at the dental clinic",
+      "enabled": true,
+      "method": "POST",
+      "tags": ["appointment", "scheduling"],
+      "endpoint": "https://api.smilesclinic.com/v1/appointments/schedule",
+      "requiredFields": [
+        {
+          "name": "patient_name",
+          "description": "Full name of the patient who wants to schedule the appointment",
+          "promptHint": "Could you please provide your full name?",
+          "type": "string"
+        },
+        {
+          "name": "email",
+          "description": "Patient's email address for appointment confirmation",
+          "promptHint": "What's your email address for the appointment confirmation?",
+          "type": "email"
+        },
+        {
+          "name": "phone",
+          "description": "Patient's phone number for contact",
+          "promptHint": "Could you provide your phone number?",
+          "type": "phone"
+        },
+        {
+          "name": "preferred_date",
+          "description": "Preferred date and time for the appointment",
+          "promptHint": "What date and time would work best for your appointment?",
+          "type": "datetime"
+        },
+        {
+          "name": "service_type",
+          "description": "Type of dental service needed",
+          "promptHint": "What type of dental service do you need? (cleaning, consultation, etc.)",
+          "type": "string"
+        }
+      ],
+      "headers": {
+        "Authorization": "Bearer {{clinic_api_key}}",
+        "Content-Type": "application/json",
+        "X-Clinic-ID": "smiles_001"
+      },
+      "bodyTemplate": {
+        "patient": {
+          "name": "{{patient_name}}",
+          "email": "{{email}}",
+          "phone": "{{phone}}"
+        },
+        "appointment": {
+          "datetime": "{{preferred_date|format('yyyy-MM-dd HH:mm')}}",
+          "service": "{{service_type}}",
+          "timezone": "America/Lima"
+        }
+      },
+      "bodySchema": {
+        "patient_name": "string",
+        "email": "string",
+        "preferred_date": "date",
+        "service_type": "string"
+      },
+      "responseMapping": {
+        "confirmation_id": "$.data.appointment.id",
+        "scheduled_date": "$.data.appointment.datetime",
+        "status": "$.status",
+        "doctor_name": "$.data.appointment.doctor.name",
+        "conflict_reason": "$.error.reason"
+      },
+      "responseMessage": "Your appointment has been successfully scheduled for {{scheduled_date}} with Dr. {{doctor_name}}",
+      "responseConditions": [
+        {
+          "condition": "$.status == 'confirmed'",
+          "message": "¡Perfect! Your appointment has been confirmed for {{scheduled_date}} with Dr. {{doctor_name}}. We'll send you a reminder 24 hours before. Confirmation ID: {{confirmation_id}}",
+          "nextService": "send_appointment_reminder"
+        },
+        {
+          "condition": "$.status == 'conflict'",
+          "message": "Sorry, that time slot is not available. {{conflict_reason}}. Would you like me to suggest other available times?",
+          "nextService": "suggest_alternative_times"
+        },
+        {
+          "condition": "$.status == 'error' && $.error.code == 'invalid_email'",
+          "message": "The email address provided seems invalid. Could you please verify your email address?",
+          "nextService": "verify_contact_info"
+        },
+        {
+          "condition": "$.status == 'error' && $.error.code == 'past_date'",
+          "message": "I cannot schedule appointments for past dates. Could you please choose a future date?"
+        },
+        {
+          "condition": "$.status == 'pending'",
+          "message": "Your appointment request is being reviewed. We'll contact you within 24 hours to confirm availability and finalize the details."
+        }
+      ],
+      "action": "conversar_humano"
+    },
+    {
+      "intent": "check_insurance",
+      "reference": "Service to verify patient insurance coverage and benefits",
+      "enabled": true,
+      "method": "GET",
+      "tags": ["insurance", "verification"],
+      "endpoint": "https://api.smilesclinic.com/v1/insurance/verify",
+      "requiredFields": [
+        {
+          "name": "insurance_provider",
+          "description": "Name of the insurance company",
+          "promptHint": "What's your insurance provider name?",
+          "type": "string"
+        },
+        {
+          "name": "policy_number",
+          "description": "Insurance policy or member ID number",
+          "promptHint": "Could you provide your policy or member ID number?",
+          "type": "string"
+        }
+      ],
+      "headers": {
+        "Authorization": "Bearer {{insurance_api_key}}",
+        "Content-Type": "application/json"
+      },
+      "responseMapping": {
+        "coverage_status": "$.data.coverage.status",
+        "deductible": "$.data.coverage.deductible",
+        "copay": "$.data.coverage.copay",
+        "covered_services": "$.data.coverage.services"
+      },
+      "responseMessage": "Your insurance verification is complete. Coverage status: {{coverage_status}}",
+      "responseConditions": [
+        {
+          "condition": "$.data.coverage.status == 'active'",
+          "message": "Great news! Your insurance is active. Your copay is ${{copay}} and your remaining deductible is ${{deductible}}. Covered services include: {{covered_services}}."
+        },
+        {
+          "condition": "$.data.coverage.status == 'inactive'",
+          "message": "It appears your insurance policy is not currently active. Please contact your insurance provider or we can discuss our self-pay options."
+        },
+        {
+          "condition": "$.data.coverage.status == 'not_found'",
+          "message": "I couldn't find your policy in our system. Please verify your insurance information or contact us directly for assistance."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "intent": "assign_urgent_tag",
+      "reference": "Tags patients as urgent when they mention emergency dental situations",
+      "tags": ["emergency", "urgent"],
+      "enabled": true,
+      "responseMessage": "I've marked your case as urgent and notified our emergency team.",
+      "responseJson": false,
+      "action": [
+        {
+          "type": "action.tag",
+          "value": "urgent_case"
+        },
+        {
+          "type": "action.asign",
+          "value": "emergency@smilesclinic.com"
+        }
+      ]
+    },
+    {
+      "intent": "schedule_follow_up",
+      "reference": "Automatically schedules follow-up appointments and assigns appropriate case management",
+      "tags": ["follow-up", "scheduling"],
+      "enabled": true,
+      "responseMessage": "Your follow-up has been scheduled and assigned to our treatment coordinator.",
+      "responseJson": false,
+      "action": [
+        {
+          "type": "action.stage",
+          "value": "follow_up_scheduled"
+        },
+        {
+          "type": "action.segmentation",
+          "value": "post_treatment_care"
+        }
+      ]
+    },
+    {
+      "intent": "end_consultation",
+      "reference": "Ends the AI consultation when the patient no longer needs assistance",
+      "tags": ["consultation", "end"],
+      "enabled": true,
+      "responseMessage": "Thank you for contacting Smiles Dental Clinic. Have a great day!",
+      "responseJson": false,
+      "action": [
+        {
+          "type": "action.agentShutDown",
+          "value": "true"
+        }
+      ]
+    }
+  ]
+}

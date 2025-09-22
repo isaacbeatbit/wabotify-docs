@@ -1,0 +1,94 @@
+---
+title: Variables
+description: Definición de como funcionan las variables del Agente de IA
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Variables
+
+Definición de como funcionan las variables del Agente de IA
+
+## Introducción
+
+Este documento menciona como funcionan las variables del Agente de IA.
+
+<Aside title="Nota">
+  Las variables del agente solo se podrán usar en la pestaña de Servicios para
+  poder enviar la información al Servicio API Rest configurado.
+</Aside>
+
+## Variables del Servicio de Agentes
+
+Las variables del sistema son valores predefinidos que el agente puede utilizar automáticamente en los servicios. Estas variables se actualizan dinámicamente durante la conversación y proporcionan información contextual importante.
+
+Sintaxis: `[nombreVariable]`
+
+**Solo disponibles en:** Sección Servicios
+
+| Variable          | Descripción                                 | Tipo     | Ejemplo                             |
+| ----------------- | ------------------------------------------- | -------- | ----------------------------------- |
+| [lastmessagetime] | Fecha y hora del último mensaje del usuario | Sistema  | 2024-08-31 18:53:28                 |
+| [sessionId]       | ID único de la sesión actual                | Sistema  | sess_abc123def456                   |
+| [agentId]         | ID único del agente actual                  | Sistema  | agent_xyz789                        |
+| [lastmessage]     | Último mensaje del usuario                  | Sistema  | "Hola, necesito agendar una cita"   |
+| [lastmessageIA]   | Última respuesta del agente                 | Sistema  | "¡Hola! Te ayudo a agendar tu cita" |
+| [urlTempFile]     | URL temporal de archivos adjuntos           | Dinámico | https://temp.wabotify.com/file123   |
+
+### Ubicaciones de uso:
+
+- **Endpoints** - Para incluir variables del sistema en las URLs
+- **Headers** - Para autenticación o identificación
+- **Body** templates - Para enviar datos contextuales
+- **Respuestas** - Para personalizar mensajes
+
+## Ejemplo de uso:
+
+```json
+"services": [
+    {
+      "intent": "conversar_humano",
+      "reference": "Transferir conversación a agente humano cuando el cliente confirma que quiere hablar con una persona después de que el asistente virtual le ofrece soporte humano en la conversación. El cliente puede responder con confirmaciones como sí, ok, por favor, perfecto cuando se le pregunta si desea conversar con un agente humano.",
+      "enabled": true,
+      "method": "POST",
+      "requiredFields": [
+        {
+          "name": "curp",
+          "description": "Valor del Curp",
+          "promptHint": "Cual es tu curp?",
+          "type": "string"
+        }
+      ],
+      "tags": [
+        "humano",
+        "agente",
+        "conversar",
+        "si",
+        "sí",
+        "por favor",
+        "claro",
+        "perfecto",
+        "dale"
+      ],
+      "endpoint": "https://hook.us1.make.com/8dvokk7w5rqvlnbq9ibekj9vurqhprsy",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "bodyTemplate": {
+        "curp": "{{curp}}",
+        "lastmessage": "[lastmessage]",
+        "messageIA": "[lastmessageIA]",
+        "fecha": "[lastmessagetime]",
+        "sessionId": "[sessionId]"
+      },
+      "responseMessage": "Validaremos la informacion.",
+      "action": ""
+    }
+  ]
+```
+
+<Aside title="Nota" type="caution">
+  Las variables de agente se diferencian de las variables de los campos
+  requeridos por usar corchetes [variable] en lugar de llaves dobles `
+  {{ variable }}`.
+</Aside>
