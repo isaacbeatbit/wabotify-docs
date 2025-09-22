@@ -294,6 +294,56 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label: "SDK",
+          items: [
+            {
+              label: "Bienveido al SDK",
+              slug: "sdk/bienvenido",
+            },
+            {
+              label: "Instalación de NPM",
+              slug: "sdk/instalacion",
+            },
+            {
+              label: "Modulos",
+              items: [
+                {
+                  label: "Agente de IA",
+                  slug: "sdk/modulos/agente-de-ia",
+                },
+                {
+                  label: "Services API",
+                  slug: "sdk/modulos/services",
+                },
+                {
+                  label: "Formatos",
+                  slug: "sdk/modulos/formatos",
+                },
+                {
+                  label: "Archivos",
+                  slug: "sdk/modulos/archivos",
+                },
+                {
+                  label: "Widgets",
+                  slug: "sdk/modulos/widget",
+                },
+                {
+                  label: "Portal",
+                  slug: "sdk/modulos/portal",
+                },
+                {
+                  label: "WhatsApp",
+                  slug: "sdk/modulos/whatsapp",
+                },
+                {
+                  label: "Acciones",
+                  slug: "sdk/modulos/acciones",
+                },
+              ],
+            },
+          ],
+        },
       ],
       plugins: [starlightThemeRapide()],
     }),

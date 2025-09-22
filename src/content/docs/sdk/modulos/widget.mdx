@@ -1,0 +1,76 @@
+---
+title: Widget
+description: Implementación e instalación de Widget para Webs.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Widget Ia
+
+Implementación e instalación de Widget para Webs.
+
+## Introducción
+
+Con el **SDK de Plazbot** podrás tener un Widget para tu página web con solo una línea de código. El widget es una característica del Agente de IA, por lo que hay que activar y desactivar el Widget.
+
+<Aside title="Nota">
+  Esta función requiere una actualización independiente de la del agente, por lo
+  que si la usas en la actualización general, no se entregará el script.
+</Aside>
+
+---
+
+## Activación
+
+Para activar el widget debemos actualizar un campo del Agente de IA que es **enableWidget**:
+
+```js
+const result = await bot.enableWidget({ id: agentId, enable: true });
+console.log("🤖 Widget State:", result);
+```
+
+Cuando se activa, el sistema le enviará de retorno en el JSON la ruta para que pueda implementar en su página web:
+
+```html
+<script
+  id="plazbot-widget-script"
+  type="module"
+  defer
+  src="https://storagelaplazbot.z13.web.core.windows.net/widget.js?Id={ID_AGENT}zone={ZONE}&workspaceId={WORKSPACE_ID}"
+></script>
+```
+
+![Crear Nuevo Agente](../../../../assets/sdk/widget-1.avif)
+
+![Crear Nuevo Agente](../../../../assets/sdk/widget-2.avif)
+
+---
+
+## Desactivación
+
+Para desactivar el widget solo tienes que ejecutar la misma línea de código de activación y enviarle el valor de **false**:
+
+```js
+const result = await bot.enableWidget({ id: agentId, enable: false });
+console.log("🤖 Widget State:", result);
+```
+
+---
+
+## Cambios en Agent.config.json
+
+Las modificaciones que se realizan en el `agent.config.json` son las siguientes:
+
+- **enableWidget**: Booleano que indica si el widget está activo o no.
+- **darkWidget**: Booleano que indica si el widget está en modo oscuro o no.
+- **nameWidget**: String que indica el nombre del widget.
+- **initialShowWidget**: Booleano que indica si el widget aparece inicialmente abierto o no.
+
+```json
+{
+  "enableWidget": true,
+  "darkWidget": true,
+  "nameWidget": "Plazbot",
+  "initialShowWidget": true
+}
+```

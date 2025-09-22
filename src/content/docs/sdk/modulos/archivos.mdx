@@ -1,0 +1,84 @@
+---
+title: Archivos
+description: Agregar archivos al Agente para que pueda responder información de tu empresa.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Archivos
+
+Agregar archivos al Agente para que pueda responder información de tu empresa.
+
+## API de Archivos – Agregar, Validar y Eliminar Archivos
+
+Esta API permite subir archivos (`.pdf`, `.doc`, `.docx`) y conectarlos con un agente de IA para que su contenido pueda ser procesado mediante tecnología de Recuperación Aumentada por Generación (RAG). Los archivos son analizados y divididos en fragmentos vectorizados que pueden ser utilizados durante la conversación con el usuario.
+
+---
+
+## Agregar Archivo
+
+Sube un archivo y lo vincula con un agente de IA. El contenido del archivo será procesado y almacenado como fragmentos de conocimiento consultables.
+
+| Campo       | Tipo   | Requerido | Descripción                                                                                                                              |
+| ----------- | ------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `fileUrl`   | string | ✅ Sí     | URL pública del archivo a subir. Solo se permiten los formatos `.pdf`, `.doc`, `.docx`.                                                  |
+| `reference` | string | ✅ Sí     | Descripción detallada del contenido del archivo. Se utiliza para decidir si el archivo debe ser consultado.                              |
+| `agentId`   | string | ✅ Sí     | ID del agente al que se asociará el archivo.                                                                                             |
+| `tags`      | array  | No        | Referencias adicionales para entender mejor la información dentro del archivo. Complementan la funcionalidad de la referencia principal. |
+
+### Ejemplo
+
+```js
+const file = await bot.addFile({
+  fileUrl: "https://example.com/docs/contrato.pdf",
+  reference: "Contrato de servicio entre Plazbot y Proveedor.",
+  tags: ["whatsapp", "pricing", "conversations"],
+  agentId: agentId,
+});
+
+console.log("📁 Archivo agregado:", file);
+```
+
+---
+
+## Validar Archivo
+
+Servicio que se consume para poder validar si el archivo ya subió a la base Vectorial. Los estados posibles son `IN PROCESS` y `COMPLETE`.
+
+```js
+const validated = await bot.validateFile({
+  fileId: file.id,
+});
+
+console.log("✅ File Validated:", validated);
+```
+
+---
+
+## Eliminar Archivo
+
+Servicio para eliminar el archivo de la base de Plazbot y base Vectorial.
+
+```js
+const deleted = await bot.deleteFile({
+  fileId: file.id,
+  agentId: agentId,
+});
+```
+
+---
+
+## Tipos de Archivos Soportados
+
+| Extensión | Tipo                | Tamaño Máximo | OCR/Extracción |
+| --------- | ------------------- | ------------- | -------------- |
+| `.pdf`    | Documentos          | 10 MB         | ✅ Sí          |
+| `.docx`   | Word                | 5 MB          | ✅ Sí          |
+| `.txt`    | Texto plano         | 2 MB          | ✅ Sí          |
+| `.csv`    | Datos estructurados | 10 MB         | ✅ Sí          |
+| `.xlsx`   | Excel               | 10 MB         | ✅ Sí          |
+
+<Aside type="caution">
+  Los archivos se procesan automáticamente para extraer su contenido y hacer que
+  esté disponible para el agente durante las conversaciones.
+</Aside>

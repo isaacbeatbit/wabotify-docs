@@ -1,0 +1,95 @@
+---
+title: Whatsapp
+description: Explicación del funcionamiento de los mensajes de Whatsapp por SDK.
+---
+
+import { LinkCard } from "@astrojs/starlight/components";
+
+# Whatsapp
+
+Explicación del funcionamiento de los mensajes de Whatsapp por SDK.
+
+## Introducción
+
+Para trabajar con **WhatsApp**, es importante poder configurar el número en Plazbot. La configuración se realiza directamente con Meta, por lo que no debería haber ningún problema durante el proceso. También podemos ayudarte a asociar el número a través de nuestros canales de comunicación, como support@wabotify.com o **Discord**.
+
+<LinkCard
+  title="Instalación de WhatsApp"
+  href="/primeros-pasos/conectar-whatsapp-api/"
+  description="Revisa como se instala el número de WhatsApp en Wabotify."
+/>
+
+## Envia Mensajes de Whatsapp
+
+Esta función permite enviar mensajes sencillos de **WhatsApp**. Si quieres mantener un chat en tu plataforma, app u otro sitio web, esta función te permitirá registrar los mensajes entrantes y salientes. Este mensaje sencillo se utiliza cuando la conversación con el cliente ya está activa. No podrás enviar un mensaje sencillo si el cliente es nuevo o no te ha respondido en las 24 horas posteriores a tu última conversación o en el plazo que le queda.
+
+También te proporciono la documentación de Meta para que puedas revisar cómo funcionan sus mensajes, sus horarios y sus tarifas. 👉🏼 [Meta Pricing and Conversation](https://developers.facebook.com/docs/whatsapp/pricing/)
+
+```js
+// Whatsapp message
+const whatsapp = await message.onWhatsappMessage({
+  message: "What features does Plazbot have?",
+  to: "52123456789", //"sessionId12345" // sessionId
+});
+console.log("💬 IA Response:", whatsapp);
+```
+
+---
+
+## Send Whatsapp Conversation
+
+Al enviar conversaciones de **WhatsApp**, es importante poder crear la plantilla en **Plazbot**. Sección de **Marketing** -> **Plantillas**.
+
+Actualmente enviamos plantillas sin variables; estamos desarrollando la posibilidad de enviar plantillas con variables. Recuerda que, al crear la plantilla, defines los archivos que se enviarán, el tipo de plantilla, etc. Con esta función, solo envías el nombre de la plantilla y el servicio se encarga del resto.
+
+**Uso básico:**
+
+```js
+const conversation = await message.onConversation({
+  to: "52123456789",
+  template: "welcome_plazbot",
+});
+```
+
+**Uso completo:**
+
+```js
+const conversation = await message.onConversation({
+  to: "1234567890",
+  template: "promocion_especial",
+  variablesBody: [
+    { variable: "nombre", value: "Juan" },
+    { variable: "producto", value: "Laptop" },
+  ],
+  variablesHeader: [{ variable: "codigo", value: "PROMO2025" }],
+  file: {
+    fileUrl: "https://storage-files.....image.png",
+    fileName: "Imagen_ventas_1.png",
+  },
+});
+```
+
+---
+
+## Registro de Webhook
+
+Esta función te ayudará a mantener una conversación con tu usuario. Registra tu webhook y, cada vez que el cliente envíe un mensaje de texto al número que configuraste, el mensaje y la información de referencia se enviarán a tu webhook. El webhook es solo para WhatsApp.
+
+```js
+await message.registerWebhook({
+  number: "51966446311",
+  webhookUrl: "https://hook.us1.make.com/xxxxxxxx",
+});
+```
+
+---
+
+## Eliminar Webhook
+
+Eliminar el webhook del número configurado.
+
+```js
+await message.deleteWebhook({
+  number: "51966446311",
+});
+```

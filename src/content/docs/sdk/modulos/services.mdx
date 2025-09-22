@@ -1,0 +1,507 @@
+---
+title: Services
+description: Guía completa para conectar el Agente de IA con servicios externos usando APIs REST.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Servicios API
+
+Guía completa para conectar el Agente de IA con servicios externos usando APIs REST.
+
+## Configuración de los Servicios de Agentes IA
+
+Los servicios permiten que tu agente de IA se conecte con APIs externas para ejecutar acciones complejas como consultar bases de datos, realizar reservas, procesar pagos, o cualquier integración que necesites. El agente recolectará automáticamente la información necesaria del usuario antes de llamar a la API.
+
+<Aside title="Nota">
+  Los servicios están en **Producción Estable** y han demostrado alta
+  fiabilidad. El sistema maneja automáticamente la recolección de datos,
+  validación y ejecución de APIs externas.
+</Aside>
+
+## Flujo de Funcionamiento
+
+1. **Detección de Intención**: La IA identifica que el usuario quiere usar un servicio.
+2. **Recolección de Datos**: El agente pregunta por los campos requeridos que falten.
+3. **Validación**: Se validan los tipos de datos antes de enviar.
+4. **Llamada a API**: Se ejecuta la llamada HTTP con los datos recolectados.
+5. **Procesamiento**: Se mapea la respuesta según `responseMapping`.
+6. **Respuesta Final**: Se envía la respuesta personalizada al usuario.
+
+## Estructura Completa
+
+```json
+{
+  "services": [
+    {
+      "intent": "schedule_appointment",
+      "reference": "Servicio para agendar citas médicas en la clínica",
+      "enabled": true,
+      "method": "POST",
+      "requiredFields": [
+        {
+          "name": "nombre",
+          "description": "Nombre completo del paciente",
+          "promptHint": "¿Podrías indicarme tu nombre completo, por favor?",
+          "type": "string"
+        },
+        {
+          "name": "email",
+          "description": "Correo electrónico para confirmaciones",
+          "promptHint": "¿Cuál es tu dirección de correo electrónico?",
+          "type": "email"
+        },
+        {
+          "name": "fecha",
+          "description": "Fecha y hora preferida para la cita",
+          "promptHint": "¿Qué día y hora te gustaría agendar? (Ejemplo: mañana a las 3pm)",
+          "type": "date"
+        },
+        {
+          "name": "telefono",
+          "description": "Número de teléfono de contacto",
+          "promptHint": "¿Cuál es tu número de teléfono?",
+          "type": "phone"
+        }
+      ],
+      "endpoint": "https://api.clinica.com/v1/appointments",
+      "tags": ["citas", "agendamiento", "medical"],
+      "headers": {
+        "Authorization": "Bearer {{apiKey}}",
+        "Content-Type": "application/json",
+        "X-Clinic-ID": "clinic_123"
+      },
+      "bodyTemplate": {
+        "patient_name": "{{nombre}}",
+        "patient_email": "{{email}}",
+        "appointment_date": "{{fecha|format('yyyy-MM-dd HH:mm')}}",
+        "phone": "{{telefono}}",
+        "source": "plazbot_ai"
+      },
+      "responseMapping": {
+        "appointmentId": "$.data.appointment_id",
+        "confirmedDate": "$.data.scheduled_date",
+        "doctorName": "$.data.doctor.name",
+        "status": "$.status",
+        "errorMessage": "$.error.message"
+      },
+      "responseMessage": "¡Perfecto! Tu cita ha sido agendada para el {{confirmedDate}} con {{doctorName}}. ID de cita: {{appointmentId}}",
+      "responseConditions": [
+        {
+          "condition": "$.status == 'success'",
+          "message": "✅ ¡Cita confirmada! Te esperamos el {{confirmedDate}} con {{doctorName}}. Recibirás un recordatorio por email.",
+          "nextService": "verify_contact_info"
+        },
+        {
+          "condition": "$.status == 'conflict'",
+          "message": "❌ Lo siento, ese horario no está disponible. ¿Te gustaría que te sugiera horarios libres?",
+          "nextService": "verify_contact_info"
+        },
+        {
+          "condition": "$.status == 'error'",
+          "message": "⚠️ Hubo un problema al agendar: {{errorMessage}}. ¿Podrías intentar con otra fecha?",
+          "nextService": "verify_contact_info"
+        }
+      ],
+      "action": "notify_doctor"
+    }
+  ]
+}
+```
+
+---
+
+## Variables del Servicio
+
+Las variables del sistema son valores predefinidos que el agente puede utilizar automáticamente en los servicios. Estas variables se actualizan dinámicamente durante la conversación y proporcionan información contextual importante.
+
+**Sintaxis:** `[nombreVariable]`
+
+**Solo disponibles en:** Sección Servicios
+
+| Variable            | Descripción                                 | Tipo     | Ejemplo                               |
+| ------------------- | ------------------------------------------- | -------- | ------------------------------------- |
+| `[lastmessagetime]` | Fecha y hora del último mensaje del usuario | Sistema  | `2024-08-31 18:53:28`                 |
+| `[sessionId]`       | ID único de la sesión actual                | Sistema  | `sess_abc123def456`                   |
+| `[agentId]`         | ID único del agente actual                  | Sistema  | `agent_xyz789`                        |
+| `[lastmessage]`     | Último mensaje del usuario                  | Sistema  | `"Hola, necesito agendar una cita"`   |
+| `[lastmessageIA]`   | Última respuesta del agente                 | Sistema  | `"¡Hola! Te ayudo a agendar tu cita"` |
+| `[urlTempFile]`     | URL temporal de archivos adjuntos           | Dinámico | `https://temp.plazbot.com/file123`    |
+
+### Ubicaciones de uso
+
+- **Endpoints**: Para incluir variables del sistema en las URLs
+- **Headers**: Para autenticación o identificación
+- **Body templates**: Para enviar datos contextuales
+- **Respuestas**: Para personalizar mensajes
+
+---
+
+## Ejemplo de Uso
+
+```json
+"services": [
+  {
+    "intent": "conversar_humano",
+    "reference": "Transferir conversación a agente humano cuando el cliente confirma que quiere hablar con una persona después de que el asistente virtual le ofrece soporte humano en la conversación. El cliente puede responder con confirmaciones como sí, ok, por favor, perfecto cuando se le pregunta si desea conversar con un agente humano.",
+    "enabled": true,
+    "method": "POST",
+    "requiredFields": [
+      {
+        "name": "curp",
+        "description": "Valor del Curp",
+        "promptHint": "Cual es tu curp?",
+        "type": "string"
+      }
+    ],
+    "tags": [
+      "humano", "agente", "conversar", "si", "sí", "por favor", "claro", "perfecto", "dale"
+    ],
+    "endpoint": "https://hook.us1.make.com/8dvokk7w5rqvlnbq9ibekj9vurqhprsy",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "bodyTemplate": {
+      "curp": "{{curp}}",
+      "lastmessage": "[lastmessage]",
+      "messageIA": "[lastmessageIA]",
+      "fecha": "[lastmessagetime]",
+      "sessionId": "[sessionId]"
+    },
+    "responseMessage": "Validaremos la informacion.",
+    "action": ""
+  }
+]
+```
+
+---
+
+## Campos del Servicio
+
+| Campo                | Tipo    | Requerido | Descripción                                                         |
+| -------------------- | ------- | --------- | ------------------------------------------------------------------- |
+| `intent`             | string  | ✅ Sí     | Identificador único del servicio (ej: `schedule_appointment`)       |
+| `reference`          | string  | ✅ Sí     | Descripción clara para que la IA entienda cuándo usar este servicio |
+| `enabled`            | boolean | ✅ Sí     | Si el servicio está activo (`true`) o deshabilitado (`false`)       |
+| `method`             | string  | ✅ Sí     | Método HTTP: `GET`, `POST`, `PUT`, `DELETE`                         |
+| `endpoint`           | string  | ✅ Sí     | URL completa de la API externa                                      |
+| `requiredFields`     | array   | ✅ Sí     | Lista de campos que el usuario debe proporcionar                    |
+| `headers`            | object  | ❌ No     | Headers HTTP personalizados                                         |
+| `bodyTemplate`       | object  | ❌ No     | Estructura del body para requests                                   |
+| `responseMapping`    | object  | ❌ No     | Mapeo de la respuesta usando JSONPath                               |
+| `responseMessage`    | string  | ❌ No     | Mensaje de éxito predeterminado                                     |
+| `responseConditions` | array   | ❌ No     | Respuestas condicionales basadas en el resultado                    |
+| `tags`               | array   | ❌ No     | Etiquetas para clasificar el servicio                               |
+| `action`             | string  | ❌ No     | Acción a ejecutar después del servicio                              |
+
+### Configuración de Required Fields
+
+| Campo         | Tipo   | Requerido | Descripción                                |
+| ------------- | ------ | --------- | ------------------------------------------ |
+| `name`        | string | ✅ Sí     | Nombre de la variable (sin espacios)       |
+| `description` | string | ✅ Sí     | Descripción del campo para la IA           |
+| `promptHint`  | string | ✅ Sí     | Pregunta específica para obtener este dato |
+| `type`        | string | ✅ Sí     | Tipo de dato esperado                      |
+
+---
+
+## Tipos de Datos Soportados
+
+| Tipo      | Descripción                | Ejemplo de Valor        |
+| --------- | -------------------------- | ----------------------- |
+| `string`  | Texto libre                | `"Juan Pérez"`          |
+| `email`   | Dirección de correo válida | `"usuario@email.com"`   |
+| `phone`   | Número de teléfono         | `"+51987654321"`        |
+| `date`    | Fecha y hora               | `"2024-03-15 14:30"`    |
+| `number`  | Número entero o decimal    | `150` o `99.99`         |
+| `boolean` | Verdadero o falso          | `true` / `false`        |
+| `url`     | URL válida                 | `"https://ejemplo.com"` |
+
+<Aside title="Importante" type="caution">
+  Los campos de tipo `date` son procesados inteligentemente por la IA. El
+  usuario puede escribir “mañana a las 3pm” y se convertirá automáticamente al
+  formato correcto.
+</Aside>
+
+---
+
+## Headers Comunes
+
+### Autenticación Bearer Token
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer {{apiKey}}",
+    "Content-Type": "application/json"
+  }
+}
+```
+
+### Autenticación API Key
+
+```json
+{
+  "headers": {
+    "X-API-Key": "{{apiKey}}",
+    "Content-Type": "application/json"
+  }
+}
+```
+
+### Headers Personalizados
+
+```json
+{
+  "headers": {
+    "Authorization": "Bearer {{token}}",
+    "Content-Type": "application/json",
+    "X-Client-ID": "plazbot",
+    "X-Version": "2.0",
+    "Accept": "application/json"
+  }
+}
+```
+
+---
+
+## Body Template con Formateo
+
+### Formateo de Fechas
+
+```json
+{
+  "bodyTemplate": {
+    "appointment_date": "{{fecha|format('yyyy-MM-dd')}}",
+    "appointment_time": "{{fecha|format('HH:mm')}}",
+    "timestamp": "{{fecha|format('yyyy-MM-dd HH:mm:ss')}}"
+  }
+}
+```
+
+### Variables Condicionales
+
+```json
+{
+  "bodyTemplate": {
+    "customer_name": "{{nombre}}",
+    "email": "{{email}}",
+    "phone": "{{telefono|default('Sin teléfono')}}",
+    "priority": "{{vip|default(false)}}"
+  }
+}
+```
+
+---
+
+## Response Mapping Avanzado
+
+### Mapeo Básico
+
+```json
+{
+  "responseMapping": {
+    "id": "$.data.id",
+    "status": "$.status",
+    "message": "$.data.message"
+  }
+}
+```
+
+### Mapeo de Arrays
+
+```json
+{
+  "responseMapping": {
+    "availableSlots": "$.data.available_times[*]",
+    "firstSlot": "$.data.available_times[0]",
+    "doctorName": "$.data.doctors[0].name"
+  }
+}
+```
+
+### Mapeo Condicional
+
+```json
+{
+  "responseMapping": {
+    "result": "$.success",
+    "appointmentId": "$.data.appointment_id",
+    "errorCode": "$.error.code",
+    "errorMessage": "$.error.message"
+  }
+}
+```
+
+---
+
+## Respuestas Condicionales
+
+### Configuración Avanzada
+
+```json
+{
+  "responseConditions": [
+    {
+      "condition": "$.success == true",
+      "message": "✅ ¡Éxito! Tu solicitud fue procesada. ID: {{appointmentId}}"
+    },
+    {
+      "condition": "$.error.code == 'SLOT_UNAVAILABLE'",
+      "message": "❌ Ese horario no está disponible. Horarios libres: {{availableSlots}}"
+    },
+    {
+      "condition": "$.error.code == 'INVALID_EMAIL'",
+      "message": "⚠️ El email proporcionado no es válido. ¿Podrías verificarlo?"
+    },
+    {
+      "condition": "$.status == 'pending'",
+      "message": "⏳ Tu solicitud está en revisión. Te contactaremos en 24 horas."
+    }
+  ]
+}
+```
+
+### Condiciones con Múltiples Valores
+
+```json
+{
+  "responseConditions": [
+    {
+      "condition": "$.status in ['success', 'confirmed']",
+      "message": "✅ Procesado exitosamente: {{message}}"
+    },
+    {
+      "condition": "$.status in ['error', 'failed'] && $.error.code == 'PAYMENT_FAILED'",
+      "message": "💳 Error de pago: {{errorMessage}}. ¿Quieres intentar con otra tarjeta?"
+    }
+  ]
+}
+```
+
+---
+
+## Ejemplos por Casos de Uso
+
+### Agendar Cita Médica
+
+```json
+{
+  "intent": "agendar_cita_medica",
+  "reference": "Servicio para agendar citas médicas con doctores especialistas",
+  "enabled": true,
+  "method": "POST",
+  "requiredFields": [
+    {
+      "name": "paciente",
+      "description": "Nombre completo del paciente",
+      "promptHint": "¿Cuál es el nombre completo del paciente?",
+      "type": "string"
+    },
+    {
+      "name": "especialidad",
+      "description": "Especialidad médica requerida",
+      "promptHint": "¿Qué especialidad médica necesitas? (cardiología, dermatología, etc.)",
+      "type": "string"
+    },
+    {
+      "name": "fecha_preferida",
+      "description": "Fecha y hora preferida",
+      "promptHint": "¿Cuándo te gustaría agendar la cita?",
+      "type": "date"
+    }
+  ],
+  "endpoint": "https://api.hospital.com/v2/appointments",
+  "headers": {
+    "Authorization": "Bearer {{hospitalApiKey}}",
+    "Content-Type": "application/json"
+  },
+  "bodyTemplate": {
+    "patient_name": "{{paciente}}",
+    "specialty": "{{especialidad}}",
+    "preferred_date": "{{fecha_preferida|format('yyyy-MM-dd HH:mm')}}",
+    "booking_source": "ai_assistant"
+  }
+}
+```
+
+### Consulta de Productos
+
+```json
+{
+  "intent": "consultar_producto",
+  "reference": "Buscar información detallada de productos en el catálogo",
+  "enabled": true,
+  "method": "GET",
+  "requiredFields": [
+    {
+      "name": "producto",
+      "description": "Nombre o código del producto",
+      "promptHint": "¿Qué producto te interesa consultar?",
+      "type": "string"
+    }
+  ],
+  "endpoint": "https://api.tienda.com/products/search?q={{producto}}",
+  "headers": {
+    "X-API-Key": "{{storeApiKey}}"
+  },
+  "responseMapping": {
+    "productName": "$.data[0].name",
+    "price": "$.data[0].price",
+    "stock": "$.data[0].stock",
+    "description": "$.data[0].description"
+  },
+  "responseMessage": "📦 **{{productName}}**\n💰 Precio: ${{price}}\n📊 Stock: {{stock}} unidades\n📝 {{description}}"
+}
+```
+
+### Procesar Pago
+
+```json
+{
+  "intent": "procesar_pago",
+  "reference": "Procesar pagos de órdenes usando gateway de pagos",
+  "enabled": true,
+  "method": "POST",
+  "requiredFields": [
+    {
+      "name": "monto",
+      "description": "Monto a cobrar",
+      "promptHint": "¿Cuál es el monto a cobrar?",
+      "type": "number"
+    },
+    {
+      "name": "email_cliente",
+      "description": "Email del cliente",
+      "promptHint": "¿Cuál es el email del cliente?",
+      "type": "email"
+    }
+  ],
+  "endpoint": "https://api.payments.com/v1/charges",
+  "headers": {
+    "Authorization": "Bearer {{paymentApiKey}}",
+    "Content-Type": "application/json"
+  },
+  "bodyTemplate": {
+    "amount": "{{monto}}",
+    "currency": "USD",
+    "customer_email": "{{email_cliente}}",
+    "description": "Pago procesado por IA Assistant"
+  },
+  "responseConditions": [
+    {
+      "condition": "$.status == 'succeeded'",
+      "message": "✅ ¡Pago exitoso! ID de transacción: {{transactionId}}"
+    },
+    {
+      "condition": "$.status == 'failed'",
+      "message": "❌ El pago falló: {{errorMessage}}"
+    }
+  ]
+}
+```
+
+<Aside title="Importante" type="caution">
+  **Nunca hardcodees API keys** en la configuración. Usa siempre variables como
+  `{{ apiKey }}` que se configuran de forma segura en el panel de Plazbot.
+</Aside>

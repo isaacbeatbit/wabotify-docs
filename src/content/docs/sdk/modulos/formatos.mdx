@@ -1,0 +1,82 @@
+---
+title: Formatos
+description: Explicación detallada de como usar los formatos para los Body Request
+---
+
+# Formatos
+
+Explicación detallada de como usar los formatos para los Body Request.
+
+## Guía de Formatos para Number, Date y DateTime
+
+Esta guía te ayuda a formatear correctamente números, fechas y fechas con hora en tus plantillas o respuestas dinámicas.
+
+---
+
+## Formato de Números (`number`)
+
+Puedes personalizar la visualización de los números con separadores, decimales, porcentaje o notación compacta.
+
+| Formato    | Resultado para `1234567.89` |
+| ---------- | --------------------------- |
+| `#,##0.00` | `1,234,567.89`              |
+| `0.##`     | `1234567.89`                |
+| `0.00%`    | `123456789.00%`             |
+| `0.00E+00` | `1.23E+06`                  |
+| `compact`  | `1.2M`                      |
+
+**Ejemplos**:
+
+- `{{ amount | format:'#,##0.00' }}`
+- `{{ porcentaje | format:'0.00%' }}`
+- `{{ ventas | format:'compact' }}`
+
+---
+
+## Formato de Fecha (`date`)
+
+Los formatos de fecha se definen con patrones tipo `yyyy-MM-dd` o abreviaciones.
+
+| Formato        | Resultado para `2025-06-01` |
+| -------------- | --------------------------- |
+| `yyyy-MM-dd`   | `2025-06-01`                |
+| `dd/MM/yyyy`   | `01/06/2025`                |
+| `MMM dd, yyyy` | `Jun 01, 2025`              |
+| `EEEE dd MMMM` | `Sunday 01 June`            |
+| `d 'de' MMMM`  | `1 de junio`                |
+
+**Ejemplos**:
+
+- `{{ fechaNacimiento | format:'dd/MM/yyyy' }}`
+- `{{ fechaPedido | format:'d de MMMM' }}`
+
+---
+
+## Formato de Fecha y Hora (`datetime`)
+
+Incluye fecha y hora. Se pueden usar formatos combinados con hora en 24h o 12h (AM/PM).
+
+| Formato                    | Resultado para `2025-06-01 14:05:30` |
+| -------------------------- | ------------------------------------ |
+| `yyyy-MM-dd HH:mm:ss`      | `2025-06-01 14:05:30`                |
+| `dd/MM/yyyy h:mm a`        | `01/06/2025 2:05 PM`                 |
+| `EEEE, d MMMM yyyy h:mm a` | `Sunday, 1 June 2025 2:05 PM`        |
+
+**Ejemplos**:
+
+- `{{ cita | format:'yyyy-MM-dd HH:mm:ss' }}`
+- `{{ evento | format:'EEEE d MMMM, h:mm a' }}`
+
+---
+
+## Reglas generales
+
+- Usa **`number`**, **`date`** o **`datetime`** según el tipo de dato.
+- Siempre **verifica el valor fuente** (ej: ISO 8601 para fechas).
+
+---
+
+## Links Referencias
+
+- 📘 [ICU Date Format Guide](https://unicode-org.github.io/icu/userguide/format_parse/datetime/)
+- 📘 [ICU Number Format Guide](https://unicode-org.github.io/icu/userguide/format_parse/numbers/)

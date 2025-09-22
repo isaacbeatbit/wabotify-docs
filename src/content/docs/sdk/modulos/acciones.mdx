@@ -1,0 +1,155 @@
+---
+title: Acciones
+description: Guía completa para activar acciones del Agente de IA.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Acciones
+
+Guía completa para activar acciones del Agente de IA.
+
+## Configuración de las Acciones del Agente de IA
+
+Este documento describe cómo se puede agregar en el archivo `agent.config.json` acciones que se pueden ejecutar en el Agente de IA, como por ejemplo:
+
+- Apagar un agente de IA.
+- Asignar una fase al contacto.
+- Asignar una etiqueta al contacto.
+- Asignar una segmentación al contacto.
+- Asignar un agente humano al contacto.
+
+## Estructura
+
+<Aside title="Nota">
+  Las acciones se pueden agregar en el archivo `agent.config.json`, para que el
+  Agente de IA pueda ejecutar las acciones. Estas pueden agregarse de forma
+  independiente o agregar un campo `action` dentro de un servicio.
+</Aside>
+
+```json
+{
+  "actions": [
+    {
+      "intent": "conversar_humano",
+      "reference": "Informacion cuando un usuario quiere hablar con un Agente humano.",
+      "tags": ["conversacion", "humano", "agente"],
+      "enabled": true,
+      "responseMessage": "Por favor, espera un momento mientras te conectamos con un agente humano.",
+      "responseJson": false,
+      "action": [
+        { "type": "action.asign", "value": "k@gmail.com" },
+        { "type": "action.stage", "value": "agendado" },
+        { "type": "action.agentShutDown", "value": "true" },
+        { "type": "action.segmentation", "value": "segmentacion1" },
+        { "type": "action.tag", "value": "pendiente" }
+      ]
+    }
+  ]
+}
+```
+
+## Campos de la Acción
+
+| Campo           | Descripción                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------- |
+| intent          | Identificador único de la intención de la action. (por ejemplo, `"conversar_humano"`).          |
+| reference       | Frase corta y descriptiva que ayuda a la IA a entender cuándo debe activarse esta action.       |
+| enabled         | Booleano que indica si la action está activa (`true`) o no (`false`).                           |
+| responseMessage | Mensaje que el agente debe devolver al usuario tras ejecutar correctamente la action.           |
+| responseJson    | Booleano que indica si la action debe devolver un JSON (`true`) o no (`false`).                 |
+| action          | Arreglo de objetos que indica las acciones que se deben ejecutar cuando se activa la intención. |
+
+## Tipos de Acción
+
+### Asignar un agente humano
+
+```json
+{
+  "type": "action.asign",
+  "value": "k@gmail.com"
+}
+```
+
+### Asignar una fase
+
+```json
+{
+  "type": "action.stage",
+  "value": "agendado"
+}
+```
+
+### Apagar un agente de IA
+
+```json
+{
+  "type": "action.agentShutDown",
+  "value": "true"
+}
+```
+
+### Asignar una segmentación
+
+```json
+{
+  "type": "action.segmentation",
+  "value": "segmentacion1"
+}
+```
+
+### Asignar una etiqueta
+
+```json
+{
+  "type": "action.tag",
+  "value": "pendiente"
+}
+```
+
+## Comportamiento de Respuesta
+
+### responseIA = true (Recomendado para la mayoría de casos)
+
+```json
+{
+  "responseIA": true,
+  "responseJson": false
+}
+```
+
+- Ejecuta las acciones ✅
+- La IA responde naturalmente según el contexto ✅
+- Más inteligente y conversacional ✅
+
+### responseIA = false + responseJson = false
+
+```json
+{
+  "responseIA": false,
+  "responseJson": false,
+  "responseMessage": "Solicitud procesada correctamente."
+}
+```
+
+- Ejecuta las acciones ✅
+- Responde con mensaje fijo ✅
+- Útil para confirmaciones simples ✅
+
+### responseIA = false + responseJson = true
+
+```json
+{
+  "responseIA": false,
+  "responseJson": true,
+  "responseMessage": "Proceso completado"
+}
+```
+
+- Ejecuta las acciones ✅
+- Responde con JSON estructurado ✅
+- Ideal para integraciones con APIs/webhooks ✅
+
+## Consideraciones
+
+El campo `action` también se puede agregar dentro de un servicio, para que se ejecute cuando se active el servicio como un campo más adicional. En caso de que se agregue dentro de un servicio, se debe agregar el campo `action` dentro del servicio y solo ejecutará las acciones y no analizará el mensaje del usuario ya que las referencias ya se encuentran en el servicio.

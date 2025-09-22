@@ -1,0 +1,161 @@
+---
+title: Portal de IA
+description: Explicación del funcionamiento del Portal de IA y su integración con agentes Plazbot.
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+# Portal de IA
+
+Explicación del funcionamiento del Portal de IA
+
+## Introducción
+
+Con el **SDK de Wabotify**, puedes crear Portales de IA, tipo ChatGPT para tus clientes y que tu agente pueda contestar todas las preguntas que necesiten de forma humana. Puedes implementar IA de Atención al cliente, Ventas, Soporte, etc.
+
+---
+
+## Inicialización
+
+Para poder iniciar el objeto del Portal se necesita implementarlo con el API Key y con el Workspace ID. Recuerda que para la inicialización necesitas colocar la Región donde se encuentra tu plataforma de Plazbot, puede ser **LA (LATAM)** o **EU (EUROPA)**.
+
+```js
+import { Portal } from "plazbot";
+
+const portal = new Portal({
+  workspaceId: "[YOUR_WORKSPACE_ID]",
+  apiKey: "[YOUR_API_KEY]",
+  zone: "LA", // Use "EU" for Europe
+});
+```
+
+---
+
+## Creación del Portal
+
+Crea un nuevo portal con la configuración de la interfaz de usuario (título, subtítulo, imagen de marca, etc.).
+
+<Aside title="Nota">
+🚨 **Importante:** Es fundamental asociar un agente a un portal para que funcione. El portal debe tener al menos un agente asociado; de lo contrario, no se cargará y mostrará un mensaje. La asociación se realiza mediante el siguiente método en esta documentación.
+
+✅ **Beneficio:** Con este portal, puedes tener tantos agentes como desees: un agente para Ventas, otro para Atención al Cliente, otro para Soporte, etc.
+
+</Aside>
+
+```js
+const portalCreated = await portal.addPortal({
+  name: "Portal Search",
+  zone: "LA",
+  title: "Welcome to Portal Search",
+  subtitle: "Tu fuente de historia confiable",
+  logo: "https://storage-files-plz-latam.s3.sa-east-1.amazonaws.com/master/logo-plazbot.png",
+  logodark:
+    "https://storage-files-plz-latam.s3.sa-east-1.amazonaws.com/master/logo-plazbot.png",
+  access: "direct", // or "form"
+  theme: "light", // or "dark"
+  disabled: false, // Disable the portal
+  brandOff: false, // Disable the plazbot brand
+});
+
+const portalId = portalCreated.id;
+const portalUrl = portalCreated.url;
+```
+
+### Campos de Creación del Portal
+
+| Name     | Description                                                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| name     | Nombre del portal. Texto visible para identificación.                                                                                      |
+| prompt   | Instrucciones personalizadas que definen el comportamiento del agente.                                                                     |
+| title    | Es el título que aparece en la parte superior del portal.                                                                                  |
+| subtitle | Información de referencia del portal.                                                                                                      |
+| logo     | Logotipo que aparece en la sección superior izquierda cuando está en modo claro.                                                           |
+| logodark | Logotipo que aparece en la sección superior izquierda cuando está en modo oscuro.                                                          |
+| access   | Para acceder al portal: `form` o `direct`. Actualmente, recomendamos usar el modo directo, ya que el modo “formulario” está en desarrollo. |
+| theme    | Tema visual del portal: `light` o `dark`.                                                                                                  |
+| disabled | Campo que desactiva y activa el portal.                                                                                                    |
+| brandOff | Campo que oculta el saludo de Plazbot en la parte inferior del portal.                                                                     |
+| zone     | La zona debe coincidir con la zona donde se creó la cuenta. Puede ser: `LA` (Latam) o `EU` (Europa).                                       |
+
+Al crear el portal te enviará la URL para que puedas iniciar sesión y realizar consultas al agente de IA.
+
+```txt
+https://appla.plazbot.com/portal?id={PORTAL_ID}&workspaceId={WORKSPACE_ID}
+```
+
+![Crear Nuevo Agente](../../../../assets/sdk/portal-1.avif)
+
+![Crear Nuevo Agente](../../../../assets/sdk/portal-2.avif)
+
+---
+
+## Agregar Links al Portal
+
+Añade un enlace externo (ej. “Blog”) al portal. Se permiten un máximo de 5 enlaces. Los enlaces se mostrarán debajo del portal y se configurarán para abrirse en otra pantalla.
+
+```js
+// Add un link al portal
+await portal.addLinkToPortal({
+  portalId: portalId,
+  value: "Blog Plazbot",
+  url: "https://www.plazbot.com/Blog",
+});
+
+// Otro ejemplo
+await portal.addLinkToPortal({
+  portalId: portalId,
+  value: "Discord Plazbot",
+  url: "https://discord.gg/SgyAtrwzp7",
+});
+
+// Otro ejemplo
+await portal.addLinkToPortal({
+  portalId: portalId,
+  value: "Plazbot",
+  url: "https://www.plazbot.com",
+});
+```
+
+---
+
+## Extraer Portal
+
+Extrae la información del Portal por ID.
+
+```js
+const portalInfo = await portal.getPortal(portalId);
+console.log("🔍 Portal:", portalInfo);
+```
+
+---
+
+## Eliminar los Links
+
+Elimina todos los links configurados en la plataforma.
+
+```js
+await portal.clearLinks(portalId);
+```
+
+---
+
+## Actualizar Portal
+
+Actualiza el Portal por los campos que necesites.
+
+```js
+await portal.updatePortal({
+  id: portalId,
+  name: "Plazbot Portal Updated",
+});
+```
+
+---
+
+## Eliminar Portal
+
+Elimina el Portal por ID.
+
+```js
+await portal.deletePortal(portalId);
+```
