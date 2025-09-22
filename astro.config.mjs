@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightThemeRapide from "starlight-theme-rapide";
+import aws from "astro-sst";
 
 // https://astro.build/config
 export default defineConfig({
@@ -10,9 +11,14 @@ export default defineConfig({
       title: "Wabotify Docs",
       social: [
         {
-          icon: "github",
-          label: "GitHub",
-          href: "https://github.com/withastro/starlight",
+          icon: "facebook",
+          label: "Facebook",
+          href: "https://www.facebook.com/wabotify",
+        },
+        {
+          icon: "instagram",
+          label: "Instagram",
+          href: "https://www.instagram.com/miwabotify/",
         },
       ],
       sidebar: [
@@ -348,4 +354,5 @@ export default defineConfig({
       plugins: [starlightThemeRapide()],
     }),
   ],
+  adapter: aws(),
 });
