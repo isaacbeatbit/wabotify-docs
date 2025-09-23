@@ -31,7 +31,7 @@ Sube un archivo y lo vincula con un agente de IA. El contenido del archivo será
 ```js
 const file = await bot.addFile({
   fileUrl: "https://example.com/docs/contrato.pdf",
-  reference: "Contrato de servicio entre Plazbot y Proveedor.",
+  reference: "Contrato de servicio entre Wabotify y Proveedor.",
   tags: ["whatsapp", "pricing", "conversations"],
   agentId: agentId,
 });
@@ -57,7 +57,7 @@ console.log("✅ File Validated:", validated);
 
 ## Eliminar Archivo
 
-Servicio para eliminar el archivo de la base de Plazbot y base Vectorial.
+Servicio para eliminar el archivo de la base de Wabotify y base Vectorial.
 
 ```js
 const deleted = await bot.deleteFile({

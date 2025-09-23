@@ -1,13 +1,13 @@
 ---
 title: Agente de IA
-description: Guía completa sobre la configuración del agente de IA en Plazbot
+description: Guía completa sobre la configuración del agente de IA en Wabotify
 ---
 
-Guía completa sobre la configuración del agente de IA en Plazbot
+Guía completa sobre la configuración del agente de IA en Wabotify
 
 ## Estructura del Archivo `agent.config.json`
 
-Este documento describe la estructura y configuración del archivo agent.config.json, utilizado para definir completamente un Agente de IA en Plazbot. Un agente puede estar vinculado a un portal web, widget o canal de mensajería como WhatsApp o cualquier software que tenga.
+Este documento describe la estructura y configuración del archivo agent.config.json, utilizado para definir completamente un Agente de IA en Wabotify. Un agente puede estar vinculado a un portal web, widget o canal de mensajería como WhatsApp o cualquier software que tenga.
 
 ## Inicialización
 
@@ -51,7 +51,7 @@ Puedes entrenar al agente como necesites, ya sea a través de nuestro configurad
   "question": "How can I help you today?",
   "timezone": "America/Lima",
   "enable": true,
-  "tags": ["health", "dentistry", "ia", "plazbot"],
+  "tags": ["health", "dentistry", "ia", "wabotify"],
   "showInChat": false,
   "enableWidget": true,
   "darkWidget": true,
@@ -454,7 +454,7 @@ Respuesta esperada:
     "Beneficio 2: Soporte personalizado...",
     "Beneficio 3: Capacitación mensual..."
   ],
-  "fileName": ["Contrato_socio_plazbot.pdf"]
+  "fileName": ["Contrato_socio_wabotify.pdf"]
 }
 ```
 

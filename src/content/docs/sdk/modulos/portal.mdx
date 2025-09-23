@@ -1,6 +1,6 @@
 ---
 title: Portal de IA
-description: Explicación del funcionamiento del Portal de IA y su integración con agentes Plazbot.
+description: Explicación del funcionamiento del Portal de IA y su integración con agentes Wabotify.
 ---
 
 import { Aside } from "@astrojs/starlight/components";
@@ -17,7 +17,7 @@ Con el **SDK de Wabotify**, puedes crear Portales de IA, tipo ChatGPT para tus c
 
 ## Inicialización
 
-Para poder iniciar el objeto del Portal se necesita implementarlo con el API Key y con el Workspace ID. Recuerda que para la inicialización necesitas colocar la Región donde se encuentra tu plataforma de Plazbot, puede ser **LA (LATAM)** o **EU (EUROPA)**.
+Para poder iniciar el objeto del Portal se necesita implementarlo con el API Key y con el Workspace ID. Recuerda que para la inicialización necesitas colocar la Región donde se encuentra tu plataforma de Wabotify, puede ser **LA (LATAM)** o **EU (EUROPA)**.
 
 ```js
 import { Portal } from "plazbot";
@@ -54,7 +54,7 @@ const portalCreated = await portal.addPortal({
   access: "direct", // or "form"
   theme: "light", // or "dark"
   disabled: false, // Disable the portal
-  brandOff: false, // Disable the plazbot brand
+  brandOff: false, // Disable the wabotify brand
 });
 
 const portalId = portalCreated.id;
@@ -74,7 +74,7 @@ const portalUrl = portalCreated.url;
 | access   | Para acceder al portal: `form` o `direct`. Actualmente, recomendamos usar el modo directo, ya que el modo “formulario” está en desarrollo. |
 | theme    | Tema visual del portal: `light` o `dark`.                                                                                                  |
 | disabled | Campo que desactiva y activa el portal.                                                                                                    |
-| brandOff | Campo que oculta el saludo de Plazbot en la parte inferior del portal.                                                                     |
+| brandOff | Campo que oculta el saludo de Wabotify en la parte inferior del portal.                                                                     |
 | zone     | La zona debe coincidir con la zona donde se creó la cuenta. Puede ser: `LA` (Latam) o `EU` (Europa).                                       |
 
 Al crear el portal te enviará la URL para que puedas iniciar sesión y realizar consultas al agente de IA.
@@ -97,22 +97,22 @@ Añade un enlace externo (ej. “Blog”) al portal. Se permiten un máximo de 5
 // Add un link al portal
 await portal.addLinkToPortal({
   portalId: portalId,
-  value: "Blog Plazbot",
-  url: "https://www.plazbot.com/Blog",
+  value: "Blog Wabotify",
+  url: "https://www.wabotify.com/Blog",
 });
 
 // Otro ejemplo
 await portal.addLinkToPortal({
   portalId: portalId,
-  value: "Discord Plazbot",
+  value: "Discord Wabotify",
   url: "https://discord.gg/SgyAtrwzp7",
 });
 
 // Otro ejemplo
 await portal.addLinkToPortal({
   portalId: portalId,
-  value: "Plazbot",
-  url: "https://www.plazbot.com",
+  value: "Wabotify",
+  url: "https://www.wabotify.com",
 });
 ```
 
@@ -146,7 +146,7 @@ Actualiza el Portal por los campos que necesites.
 ```js
 await portal.updatePortal({
   id: portalId,
-  name: "Plazbot Portal Updated",
+  name: "Wabotify Portal Updated",
 });
 ```
 

@@ -1,6 +1,6 @@
 ---
 title: "Get Messages"
-description: "Obtén los mensajes de un contacto específico en Plazbot. Soporta paginación mediante continuationToken."
+description: "Obtén los mensajes de un contacto específico en Wabotfy. Soporta paginación mediante continuationToken."
 ---
 
 # Get Messages

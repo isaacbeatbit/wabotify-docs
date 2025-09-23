@@ -1,6 +1,6 @@
 ---
 title: "Get Contact By Id"
-description: "Obtén un contacto por su ID en Plazbot. Incluye headers, parámetros path y query, ejemplo de cURL y ejemplo de respuesta JSON."
+description: "Obtén un contacto por su ID en Wabotify. Incluye headers, parámetros path y query, ejemplo de cURL y ejemplo de respuesta JSON."
 ---
 
 # Get Contact By Id

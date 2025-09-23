@@ -11,7 +11,7 @@ Explicación del funcionamiento de los mensajes de Whatsapp por SDK.
 
 ## Introducción
 
-Para trabajar con **WhatsApp**, es importante poder configurar el número en Plazbot. La configuración se realiza directamente con Meta, por lo que no debería haber ningún problema durante el proceso. También podemos ayudarte a asociar el número a través de nuestros canales de comunicación, como support@wabotify.com o **Discord**.
+Para trabajar con **WhatsApp**, es importante poder configurar el número en Wabotify. La configuración se realiza directamente con Meta, por lo que no debería haber ningún problema durante el proceso. También podemos ayudarte a asociar el número a través de nuestros canales de comunicación, como support@wabotify.com o **Discord**.
 
 <LinkCard
   title="Instalación de WhatsApp"
@@ -28,7 +28,7 @@ También te proporciono la documentación de Meta para que puedas revisar cómo 
 ```js
 // Whatsapp message
 const whatsapp = await message.onWhatsappMessage({
-  message: "What features does Plazbot have?",
+  message: "What features does Wabotify have?",
   to: "52123456789", //"sessionId12345" // sessionId
 });
 console.log("💬 IA Response:", whatsapp);
@@ -38,7 +38,7 @@ console.log("💬 IA Response:", whatsapp);
 
 ## Send Whatsapp Conversation
 
-Al enviar conversaciones de **WhatsApp**, es importante poder crear la plantilla en **Plazbot**. Sección de **Marketing** -> **Plantillas**.
+Al enviar conversaciones de **WhatsApp**, es importante poder crear la plantilla en **Wabotify**. Sección de **Marketing** -> **Plantillas**.
 
 Actualmente enviamos plantillas sin variables; estamos desarrollando la posibilidad de enviar plantillas con variables. Recuerda que, al crear la plantilla, defines los archivos que se enviarán, el tipo de plantilla, etc. Con esta función, solo envías el nombre de la plantilla y el servicio se encarga del resto.
 
@@ -47,7 +47,7 @@ Actualmente enviamos plantillas sin variables; estamos desarrollando la posibili
 ```js
 const conversation = await message.onConversation({
   to: "52123456789",
-  template: "welcome_plazbot",
+  template: "welcome_wabotify",
 });
 ```
 

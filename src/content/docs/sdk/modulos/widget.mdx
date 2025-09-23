@@ -11,7 +11,7 @@ Implementación e instalación de Widget para Webs.
 
 ## Introducción
 
-Con el **SDK de Plazbot** podrás tener un Widget para tu página web con solo una línea de código. El widget es una característica del Agente de IA, por lo que hay que activar y desactivar el Widget.
+Con el **SDK de Wabotify** podrás tener un Widget para tu página web con solo una línea de código. El widget es una característica del Agente de IA, por lo que hay que activar y desactivar el Widget.
 
 <Aside title="Nota">
   Esta función requiere una actualización independiente de la del agente, por lo
@@ -33,7 +33,7 @@ Cuando se activa, el sistema le enviará de retorno en el JSON la ruta para que 
 
 ```html
 <script
-  id="plazbot-widget-script"
+  id="wabotify-widget-script"
   type="module"
   defer
   src="https://storagelaplazbot.z13.web.core.windows.net/widget.js?Id={ID_AGENT}zone={ZONE}&workspaceId={WORKSPACE_ID}"
@@ -70,7 +70,7 @@ Las modificaciones que se realizan en el `agent.config.json` son las siguientes:
 {
   "enableWidget": true,
   "darkWidget": true,
-  "nameWidget": "Plazbot",
+  "nameWidget": "Wabotify",
   "initialShowWidget": true
 }
 ```

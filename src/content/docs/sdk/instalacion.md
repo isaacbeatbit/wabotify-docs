@@ -1,11 +1,13 @@
 ---
 title: Instalación de npm
-description: Guía paso a paso para instalar el SDK Plazbot utilizando npm.
+description: Guía paso a paso para instalar el SDK Wabotify utilizando npm.
 ---
 
 # Instalación de npm
 
-Prerequisitos antes de comenzar a trabajar con Wabotify SDK **Prerequisite**: Por favor instalar Node.js (version 19 or higher) antes de seguir. Sigue estos pasos de instalación en tu ambiente de desarrollo para poder crear agentes.**Step 1**: Install Plazbot:npmCopy
+Prerequisitos antes de comenzar a trabajar con Wabotify SDK **Prerequisite**: Por favor instalar Node.js (version 19 or higher) antes de seguir. Sigue estos pasos de instalación en tu ambiente de desarrollo para poder crear agentes.
+
+**Step 1**: Install Plazbot:npmCopy
 
 ```sh
 npm install plazbot

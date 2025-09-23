@@ -1,11 +1,11 @@
 ---
 title: "Get Contacts"
-description: "Obtén la lista de contactos de un workspace en Plazbot. Soporta paginación mediante continuationToken."
+description: "Obtén la lista de contactos de un workspace en Wabotify. Soporta paginación mediante continuationToken."
 ---
 
 # Get Contacts
 
-Servicio para obtener los contactos de un workspace en Plazbot.
+Servicio para obtener los contactos de un workspace en Wabotify.
 
 ## Endpoint
 

@@ -1,6 +1,6 @@
 ---
 title: "Create Opportunity"
-description: "Crea una oportunidad en Plazbot asociada a un workspace y (opcionalmente) a un contacto."
+description: "Crea una oportunidad en Wabotfy asociada a un workspace y (opcionalmente) a un contacto."
 ---
 
 # Create Opportunity

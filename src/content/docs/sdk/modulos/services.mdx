@@ -76,7 +76,7 @@ Los servicios permiten que tu agente de IA se conecte con APIs externas para eje
         "patient_email": "{{email}}",
         "appointment_date": "{{fecha|format('yyyy-MM-dd HH:mm')}}",
         "phone": "{{telefono}}",
-        "source": "plazbot_ai"
+        "source": "wabotify_ai"
       },
       "responseMapping": {
         "appointmentId": "$.data.appointment_id",
@@ -256,7 +256,7 @@ Las variables del sistema son valores predefinidos que el agente puede utilizar 
   "headers": {
     "Authorization": "Bearer {{token}}",
     "Content-Type": "application/json",
-    "X-Client-ID": "plazbot",
+    "X-Client-ID": "wabotify",
     "X-Version": "2.0",
     "Accept": "application/json"
   }
@@ -503,5 +503,5 @@ Las variables del sistema son valores predefinidos que el agente puede utilizar 
 
 <Aside title="Importante" type="caution">
   **Nunca hardcodees API keys** en la configuración. Usa siempre variables como
-  `{{ apiKey }}` que se configuran de forma segura en el panel de Plazbot.
+  `{{ apiKey }}` que se configuran de forma segura en el panel de Wabotify.
 </Aside>

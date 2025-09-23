@@ -18,14 +18,14 @@ POST /api/user/sendEmailToResetPassword
 ## Body (application/json)
 
 - `email` (string, required) — Correo electrónico del usuario que solicita el restablecimiento.
-- `company` (string, required) — Código de la compañía (white-label). Para Plazbot usar: `plazbot`.
+- `company` (string, required) — Código de la compañía (white-label). Para Wabotify usar: `wabotify`.
 
 Ejemplo de request (JSON):
 
 ```json
 {
   "email": "juan.perez@example.com",
-  "company": "plazbot"
+  "company": "wabotify"
 }
 ```
 
@@ -37,7 +37,7 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "email": "juan.perez@example.com",
-    "company": "plazbot"
+    "company": "wabotify"
   }'
 ```
 
@@ -61,7 +61,7 @@ curl --request POST \
 
 ## Notas y recomendaciones
 
-- Asegúrate de enviar `company` correcto (por ejemplo `plazbot`) para entornos white-label.
+- Asegúrate de enviar `company` correcto (por ejemplo `wabotify`) para entornos white-label.
 - El correo recibido por el usuario contendrá un enlace o token seguro para completar el flujo de restablecimiento de contraseña en el cliente/web.
 - Nunca incluyas contraseñas en URLs; el token de restablecimiento debe transportarse por correo y la nueva contraseña debe enviarse únicamente mediante el formulario seguro del front-end.
 - Para entornos de desarrollo, valida que las plantillas de correo estén configuradas y que el servicio de envío de emails esté activo.

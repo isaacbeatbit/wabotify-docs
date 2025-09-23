@@ -1,6 +1,6 @@
 ---
 title: "Get Contact By Phone"
-description: "Busca un contacto por número de teléfono (cellphone) en Plazbot. Incluye headers, parámetros y ejemplos de cURL/JSON."
+description: "Busca un contacto por número de teléfono (cellphone) en Wabotify. Incluye headers, parámetros y ejemplos de cURL/JSON."
 ---
 
 # Get Contact By Phone

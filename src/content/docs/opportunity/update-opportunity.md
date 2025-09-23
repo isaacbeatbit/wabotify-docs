@@ -1,6 +1,6 @@
 ---
 title: "Update Opportunity"
-description: "Actualiza campos de una oportunidad en Plazbot. Reemplaza `paramToUpdate` por el nombre del campo a actualizar y envía su nuevo valor en el cuerpo JSON."
+description: "Actualiza campos de una oportunidad en Wabotify. Reemplaza `paramToUpdate` por el nombre del campo a actualizar y envía su nuevo valor en el cuerpo JSON."
 ---
 
 # Update Opportunity

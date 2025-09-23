@@ -1,6 +1,6 @@
 ---
 title: "Get Contact By Email"
-description: "Busca un contacto por su correo electrónico en Plazbot. Incluye headers, parámetros query y ejemplos de cURL / JSON."
+description: "Busca un contacto por su correo electrónico en Wabotify. Incluye headers, parámetros query y ejemplos de cURL / JSON."
 ---
 
 # Get Contact By Email

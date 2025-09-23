@@ -22,7 +22,7 @@ POST /api/user
 - `lastName` (string, required) — Apellido del usuario.
 - `email` (string, required) — Correo electrónico del usuario.
 - `password` (string, required) — Contraseña.
-- `company` (string, required) — Código de la compañía (para white-label). Para Plazbot usar: `plazbot`.
+- `company` (string, required) — Código de la compañía (para white-label). Para Wabotify usar: `wabotify`.
 - `defaultStartWeek` (integer, optional, default: 0) — Día de inicio de semana por defecto (0 = Domingo, 1 = Lunes).
 - `isExternalCreation` (boolean, optional, default: true) — Indica si la creación proviene de un sistema externo.
 
@@ -34,7 +34,7 @@ Ejemplo de request (JSON):
   "lastName": "Pérez",
   "email": "juan.perez@example.com",
   "password": "SecurePassword123!",
-  "company": "plazbot",
+  "company": "wabotify",
   "defaultStartWeek": 1,
   "isExternalCreation": true
 }
@@ -84,6 +84,6 @@ curl --request POST \
 
 - El endpoint requiere autenticación mediante el header `Authorization: Bearer <token>`.
 - Asegúrate de aplicar buenas prácticas de seguridad para contraseñas (longitud mínima, complejidad) en el cliente.
-- `company` debe coincidir con los códigos aceptados por la plataforma; para entornos Plazbot usar `plazbot`.
+- `company` debe coincidir con los códigos aceptados por la plataforma; para entornos Wabotify usar `plazbot`.
 - `isExternalCreation` puede usarse para distinguir usuarios creados por integraciones externas.
 - Después de crear el usuario, puede ser necesario activar o validar el email según la configuración del workspace.

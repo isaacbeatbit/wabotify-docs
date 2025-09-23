@@ -2,7 +2,8 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightThemeRapide from "starlight-theme-rapide";
-import aws from "astro-sst";
+
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
@@ -353,6 +354,6 @@ export default defineConfig({
       ],
       plugins: [starlightThemeRapide()],
     }),
+    sitemap(),
   ],
-  adapter: aws(),
 });

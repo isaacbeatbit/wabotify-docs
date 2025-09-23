@@ -33,7 +33,7 @@ curl --request GET \
   "name": "Juan",
   "lastName": "Pérez",
   "email": "juan.perez@example.com",
-  "company": "plazbot",
+  "company": "wabotify",
   "roles": ["admin"],
   "workspaceId": "workspace-789",
   "createdAt": "2025-04-01T12:34:56.000Z",
