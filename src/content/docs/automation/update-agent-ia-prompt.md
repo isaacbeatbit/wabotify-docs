@@ -19,7 +19,7 @@ Luego en sus configuración existe la opción de copiar el id del Agente de IA q
 
 ```sh
 curl --request POST \
-  --url https://api.plazbot.com/api/automation/node/{nodeId}/prompt \
+  --url https://api.wabotify.com/api/automation/node/{nodeId}/prompt \
   --header 'Content-Type: application/json' \
   --data '{
   "workspaceId": "<string>",

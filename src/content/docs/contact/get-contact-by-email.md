@@ -24,7 +24,7 @@ GET /api/contact/searchByEmail
 
 ```sh
 curl --request GET \
-  --url 'https://api.plazbot.com/api/contact/searchByEmail?email=user%40example.com&workspaceId=WORKSPACE_ID' \
+  --url 'https://api.wabotify.com/api/contact/searchByEmail?email=user%40example.com&workspaceId=WORKSPACE_ID' \
   --header 'x-workspace-id: YOUR_WORKSPACE_ID'
 ```
 

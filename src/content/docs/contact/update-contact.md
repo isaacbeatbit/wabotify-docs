@@ -30,7 +30,7 @@ Esta página muestra el endpoint, encabezados, parámetros de consulta, ejemplos
 - `workspaceId` (string, requerido) — Identificador del workspace.
 
 Ejemplo de URL con query parameters:
-`https://api.plazbot.com/api/contact?id=<contact-id>&workspaceId=<workspace-id>`
+`https://api.wabotify.com/api/contact?id=<contact-id>&workspaceId=<workspace-id>`
 
 ## Body (application/json)
 
@@ -61,7 +61,7 @@ Para actualizar el `email`:
 
 ```sh
 curl --request PUT \
-  --url 'https://api.plazbot.com/api/contact?id=CONTACT_ID&workspaceId=WORKSPACE_ID' \
+  --url 'https://api.wabotify.com/api/contact?id=CONTACT_ID&workspaceId=WORKSPACE_ID' \
   --header 'Content-Type: application/json' \
   --header 'x-workspace-id: YOUR_WORKSPACE_ID' \
   --data '{

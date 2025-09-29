@@ -33,7 +33,7 @@ code = 7
 
 ```sh
 curl --request POST \
-  --url https://api.plazbot.com/api/contact \
+  --url https://api.wabotify.com/api/contact \
   --header 'Content-Type: application/json' \
   --header 'x-workspace-id: <x-workspace-id>' \
   --data '{

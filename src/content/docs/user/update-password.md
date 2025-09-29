@@ -35,7 +35,7 @@ Ejemplo de request (JSON):
 
 ```sh
 curl --request POST \
-  --url 'https://api.plazbot.com/api/user/resetPassword' \
+  --url 'https://api.wabotify.com/api/user/resetPassword' \
   --header 'Content-Type: application/json' \
   --data '{
     "email": "juan.perez@example.com",

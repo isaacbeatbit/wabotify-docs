@@ -38,7 +38,7 @@ Ejemplo de body:
 
 ```sh
 curl --request POST \
-  --url 'https://api.plazbot.com/api/contact/CONTACT_ID/activities' \
+  --url 'https://api.wabotify.com/api/contact/CONTACT_ID/activities' \
   --header 'Content-Type: application/json' \
   --header 'x-workspace-id: YOUR_WORKSPACE_ID' \
   --data '{

@@ -28,7 +28,7 @@ GET /api/opportunity/{id}
 
 ```sh
 curl --request GET \
-  --url 'https://api.plazbot.com/api/opportunity/OPPORTUNITY_ID?workspaceId=WORKSPACE_ID' \
+  --url 'https://api.wabotify.com/api/opportunity/OPPORTUNITY_ID?workspaceId=WORKSPACE_ID' \
   --header 'x-workspace-id: YOUR_WORKSPACE_ID' \
   --header 'Accept: application/json'
 ```

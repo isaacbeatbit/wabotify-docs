@@ -44,7 +44,7 @@ Ejemplo de request (JSON):
 
 ```sh
 curl --request POST \
-  --url "https://api.plazbot.com/api/user" \
+  --url "https://api.wabotify.com/api/user" \
   --header "Authorization: Bearer YOUR_TOKEN" \
   --header "Content-Type: application/json" \
   --data '{

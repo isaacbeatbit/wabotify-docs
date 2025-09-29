@@ -42,7 +42,7 @@ Ejemplo de body:
 
 ```sh
 curl --request POST \
-  --url 'https://api.plazbot.com/api/opportunity/OPPORTUNITY_ID/agent/activities' \
+  --url 'https://api.wabotify.com/api/opportunity/OPPORTUNITY_ID/agent/activities' \
   --header 'Content-Type: application/json' \
   --header 'x-workspace-id: YOUR_WORKSPACE_ID' \
   --data '{

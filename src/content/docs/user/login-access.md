@@ -25,7 +25,7 @@ Se envía el email y la contraseña del usuario en el cuerpo de la petición.
 
 ```sh
 curl --request POST \
-  --url 'https://api.plazbot.com/api/user/login' \
+  --url 'https://api.wabotify.com/api/user/login' \
   --header 'Content-Type: application/json' \
   --data '{
     "email": "juan.perez@example.com",

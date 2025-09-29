@@ -24,7 +24,7 @@ GET /api/workspace/{id}
 
 ```sh
 curl --request GET \
-  --url 'https://api.plazbot.com/api/workspace/WORKSPACE_ID' \
+  --url 'https://api.wabotify.com/api/workspace/WORKSPACE_ID' \
   --header 'Accept: application/json' \
   --header 'Authorization: Bearer YOUR_TOKEN'
 ```

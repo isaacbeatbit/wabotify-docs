@@ -13,7 +13,7 @@ Envía mensajes al Agente de IA para que te pueda responder y puedas usar la res
 
 ```sh
 curl --request POST \
-  --url https://api.plazbot.com/api/agent/on-message \
+  --url https://api.wabotify.com/api/agent/on-message \
   --header 'Content-Type: application/json' \
   --header 'x-workspace-id: <x-workspace-id>' \
   --data '{

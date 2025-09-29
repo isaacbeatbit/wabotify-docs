@@ -19,7 +19,7 @@ GET /api/user/email
 
 ```sh
 curl --request GET \
-  --url 'https://api.plazbot.com/api/user/email?email=juan.perez%40example.com' \
+  --url 'https://api.wabotify.com/api/user/email?email=juan.perez%40example.com' \
   --header 'Accept: application/json'
 ```
 

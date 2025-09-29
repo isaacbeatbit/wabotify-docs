@@ -21,13 +21,13 @@ GET /api/contact/searchByCellphone
 - `workspaceId` (string, requerido) — Identificador del workspace.
 
 Ejemplo de URL:
-`https://api.plazbot.com/api/contact/searchByCellphone?cellphone=51987654321&workspaceId=WORKSPACE_ID`
+`https://api.wabotify.com/api/contact/searchByCellphone?cellphone=51987654321&workspaceId=WORKSPACE_ID`
 
 ## Ejemplo: cURL
 
 ```sh
 curl --request GET \
-  --url 'https://api.plazbot.com/api/contact/searchByCellphone?cellphone=51987654321&workspaceId=WORKSPACE_ID' \
+  --url 'https://api.wabotify.com/api/contact/searchByCellphone?cellphone=51987654321&workspaceId=WORKSPACE_ID' \
   --header 'x-workspace-id: YOUR_WORKSPACE_ID'
 ```
 

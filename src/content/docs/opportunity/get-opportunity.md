@@ -22,13 +22,13 @@ GET /api/opportunity
 - `continuationToken` (string, opcional) — Token de paginación (20 registros por página aproximadamente).
 
 Ejemplo de URL con query parameters:
-`https://api.plazbot.com/api/opportunity?workspaceId=<workspace-id>`
+`https://api.wabotify.com/api/opportunity?workspaceId=<workspace-id>`
 
 ## Ejemplo: cURL
 
 ```sh
 curl --request GET \
-  --url 'https://api.plazbot.com/api/opportunity?workspaceId=WORKSPACE_ID' \
+  --url 'https://api.wabotify.com/api/opportunity?workspaceId=WORKSPACE_ID' \
   --header 'x-workspace-id: YOUR_WORKSPACE_ID' \
   --header 'Accept: application/json'
 ```

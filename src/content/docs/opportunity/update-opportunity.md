@@ -57,7 +57,7 @@ Ejemplo para actualizar el `amount`:
 
 ```sh
 curl --request PUT \
-  --url 'https://api.plazbot.com/api/opportunity?id=OPPORTUNITY_ID&workspaceId=WORKSPACE_ID' \
+  --url 'https://api.wabotify.com/api/opportunity?id=OPPORTUNITY_ID&workspaceId=WORKSPACE_ID' \
   --header 'Content-Type: application/json' \
   --header 'x-workspace-id: YOUR_WORKSPACE_ID' \
   --data '{
@@ -124,7 +124,3 @@ curl --request PUT \
 - Algunas actualizaciones pueden requerir permisos específicos o validaciones de negocio (p. ej. mover etapa a `stageId` determinada).
 - Si necesitas actualizar múltiples campos en una sola operación, consulta si la API soporta enviar varios pares campo/valor (si no, realiza múltiples llamadas o usa un endpoint de actualización por cuerpo si existe).
 - Siempre prueba en un entorno de staging antes de ejecutar cambios en producción.
-
----
-
-Documentación clonada y adaptada desde: https://docs.plazbot.com/api-reference/opportunity/update
